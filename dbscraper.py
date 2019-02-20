@@ -25,7 +25,7 @@ try:
         print("csv doesn't exist")
         df.to_csv('data_backup.csv',index=False)
     else:
-        # Append data to text file
+        # Append data to csv file
         print("csv does exist")
         with open('data_backup.csv', 'a') as f:
             df.to_csv(f, header=False,index=False)
@@ -38,7 +38,7 @@ try:
         with open('data.txt', 'w') as outfile:  
             json.dump(data, outfile)
     else:
-        # Append data to csv
+        # Append data to txt
         print("txt does exist")
         with open('data.txt', 'a') as outfile:
             json.dump(data, outfile)
