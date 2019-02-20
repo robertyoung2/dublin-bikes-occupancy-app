@@ -37,4 +37,7 @@ try:
     with open('data.txt', 'a') as outfile:
         json.dump(data, outfile)
 except:
+    f= open("logTracebackError.log","w+")
+    f.write(traceback.format_exc())
     print(traceback.format_exc())
+    f.close() 
