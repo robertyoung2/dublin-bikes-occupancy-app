@@ -27,8 +27,9 @@ try:
     else:
         # Append data to text file
         print("csv does exist")
-        with open('data.txt', 'a') as outfile:
-            json.dump(data, outfile)
+        with open('data_backup.csv', 'a') as f:
+            df.to_csv(f, header=False,index=False)
+        
 
     # Check if text file exists, if not, create one
     text_exists = os.path.isfile('data.txt')
@@ -39,8 +40,8 @@ try:
     else:
         # Append data to csv
         print("txt does exist")
-        with open('data_backup.csv', 'a') as f:
-            df.to_csv(f, header=False,index=False)
+        with open('data.txt', 'a') as outfile:
+            json.dump(data, outfile)
 except:
     f= open("logTracebackError.log","a+")
     print(traceback.format_exc())
