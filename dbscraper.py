@@ -8,10 +8,11 @@ import requests
 import json
 import time
 import os
+import traceback
 
 NAME="Dublin"
 STATIONS="https://api.jcdecaux.com/vls/v1/stations"
-APIKEY='ENTER_A_KEY'
+APIKEY='insert_key_here'
 
 try:
     r = requests.get(STATIONS, params={"apiKey": APIKEY, "contract": NAME})
@@ -38,6 +39,6 @@ try:
         json.dump(data, outfile)
 except:
     f= open("logTracebackError.log","w+")
-    f.write(traceback.format_exc())
     print(traceback.format_exc())
+    f.write(traceback.format_exc())
     f.close() 
