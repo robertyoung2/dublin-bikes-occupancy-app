@@ -22,21 +22,25 @@ try:
     # Check if csv exists, if not, create one
     csv_exists = os.path.isfile('data_backup.csv')
     if not csv_exists:
+        print("csv doesn't exist")
         df.to_csv('data_backup.csv',index=False)
+    else:
+        # Append data to text file
+        print("csv does exist")
+        with open('data.txt', 'a') as outfile:
+            json.dump(data, outfile)
 
     # Check if text file exists, if not, create one
     text_exists = os.path.isfile('data.txt')
     if not text_exists:
+        print("txt doesn't exist")
         with open('data.txt', 'w') as outfile:  
             json.dump(data, outfile)
-
-    # Append data to csv
-    with open('data_backup.csv', 'a') as f:
-        df.to_csv(f, header=False,index=False)
-
-    # Append data to text file
-    with open('data.txt', 'a') as outfile:
-        json.dump(data, outfile)
+    else:
+        # Append data to csv
+        print("txt does exist")
+        with open('data_backup.csv', 'a') as f:
+            df.to_csv(f, header=False,index=False)
 except:
     f= open("logTracebackError.log","a+")
     print(traceback.format_exc())
