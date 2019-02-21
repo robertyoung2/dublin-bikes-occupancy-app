@@ -2,3 +2,9 @@
 /.project
 /.pydevproject
 /StaticDBikes.json
+
+__pycache__/
+
+\.vscode/
+
+\.idea/
