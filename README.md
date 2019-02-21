@@ -17,6 +17,6 @@ Required packages. Use _"conda install PACKAGE\_NAME"_:
 * jupyter
 * PyMySQL
 
-Current venv = ouiteam_v2
+Current venv: ouiteam_v2
 
 
