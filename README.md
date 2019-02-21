@@ -1,8 +1,18 @@
-oui-team Bonjour a tous travail sur la nouvelle branche
-<<<<<<< HEAD
+# READ ME
 
-This is the first commit-push test for oui team.
-=======
->>>>>>> branch 'master' of https://github.com/robertyoung2/oui-team.git
+### Package Information
 
-This is a commit after Arnaud's commit
+Below is a list of the required packages to run in the virtual environment. 
+This is a working list, as each team member finds a new package required, add to the list
+and notify the team via the dublin-bikes Slack channel.
+
+Required Packages:
+
+* pandas
+* numpy
+* requests
+* json
+* sqlalchemy 
+
+
+
