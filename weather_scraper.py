@@ -29,8 +29,9 @@ df['main_weather'] = df['weather'][0][0]['main']
 df['icon'] = df['weather'][0][0]['icon']
 df['weather_id'] = df['weather'][0][0]['id']
 
-# Drop the weather column and base column
-df = df.drop(['weather','base'], axis=1)
+# Drop the weather column and base column https://openweathermap.org/weather-data
+df = df.drop(['weather', 'base', 'coord.lat', 'coord.lon', 'sys.country', 'sys.message', 'sys.id', 'sys.type', 'name']
+             , axis=1)
 
 # Check if csv exists, if not, create one
 csv_exists = os.path.isfile('data_backup_weather.csv')
