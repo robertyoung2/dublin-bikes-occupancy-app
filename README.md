@@ -16,6 +16,7 @@ Required packages. Use _"conda install PACKAGE\_NAME"_:
 * sqlalchemy 
 * jupyter
 * PyMySQL
+* flask
 
 Current venv: ouiteam_v2.
 
