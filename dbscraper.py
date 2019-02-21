@@ -39,7 +39,6 @@ def stations_to_db(df):
         print("operation complete")
     return
 
-
 try:
     r = requests.get(STATIONS, params={"apiKey": APIKEY, "contract": NAME})
     data = json.JSONDecoder().decode(r.text)
