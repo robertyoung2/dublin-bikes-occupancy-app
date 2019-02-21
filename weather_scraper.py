@@ -20,8 +20,10 @@ PORT=***REMOVED***
 USER=***REMOVED***
 PASSWORD=***REMOVED***
 
+# Use sqlalchemy to log into the database 
 engine = create_engine("mysql+pymysql://{}:{}@{}:{}/{}".format(USER, PASSWORD, URI, PORT, DB), echo=True)
 
+# Function to connect to Amazon RDS and upload dataframe to database
 def weather_to_db(df):
     try:
         df.to_sql('current_weather', con=engine,if_exists='append', index=False)
@@ -34,7 +36,6 @@ def weather_to_db(df):
     return
 
 try:
-
     # Pull json data with api token provided above
     r = requests.get(api_url_base_weather, params={"APPID": api_token_weather})
 
@@ -85,6 +86,8 @@ try:
         print("txt does exist")
         with open('data_weather.txt', 'a') as outfile:
             json.dump(data_weather, outfile)
+
+# Error logging should data pull fail for any reason
 except:
     f= open("logTracebackError.log","a+")
     print(traceback.format_exc())
