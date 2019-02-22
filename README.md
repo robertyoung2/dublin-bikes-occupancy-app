@@ -18,6 +18,10 @@ Required packages. Use _"conda install PACKAGE\_NAME"_:
 * PyMySQL
 * flask
 
+Optional:
+
+* matplotlib (for data analytics/plotting)
+
 Current venv: ouiteam_v2.
 
 
