@@ -1,3 +1,5 @@
+
+
 import json
 import pandas as pd
 import requests
@@ -5,6 +7,7 @@ from sqlalchemy import create_engine
 import traceback
 import os
 import datetime
+from bs4 import BeautifulSoup
 
 # API weather URI for city ID "Dublin, IE"
 api_url_base_weather = ***REMOVED***
@@ -17,7 +20,7 @@ PORT = ***REMOVED***
 USER = ***REMOVED***
 PASSWORD = ***REMOVED***
 
-# Use sqlalchemy to log into the database 
+# Use sqlalchemy to log into the database
 engine = create_engine("mysql+pymysql://{}:{}@{}:{}/{}".format(USER, PASSWORD, URI, PORT, DB), echo=True)
 
 
@@ -60,7 +63,21 @@ try:
     df = df.drop(['weather', 'base', 'coord.lat', 'coord.lon', 'sys.country', 'sys.message', 'sys.id', 'sys.type',
                   'name'], axis=1)
 
-    # Send the dataframe to the RDS database table "current_weather"
+    # Access met weather (for rainfall in mm) data html table and convert into data frame
+    df_rainfall = pd.read_html('https://www.met.ie/latest-reports/observations', header=1)
+
+    # Drop columns that will not be used
+    df_rainfall = df_rainfall[0].drop(['Dir', 'Speed Kts(Km/h)',
+                                       'Gust Kts(Km/h)', 'Weather',
+                                       'oC', '(%)', '(hPa)'], axis=1)
+
+    # Filter location to Dublin for new df
+    df_rainfall = df_rainfall.loc[df_rainfall['Location'] == 'Dublin']
+
+    # Add rainfall column to existing core dataframe
+    df['rainfall_mm'] = df_rainfall.iloc[0]['(mm)']
+
+    # Send the data frame to the RDS database table "current_weather"
     weather_to_db(df)
 
     # Check if csv exists, if not, create one
