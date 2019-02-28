@@ -17,6 +17,7 @@ Required packages. Use _"conda install PACKAGE\_NAME"_:
 * jupyter
 * PyMySQL
 * flask
+* conda install beautifulsoup4 
 
 Optional:
 
