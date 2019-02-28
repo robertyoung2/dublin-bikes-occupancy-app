@@ -36,7 +36,6 @@ def weather_to_db(df):
         print("operation complete")
     return
 
-
 try:
     # Pull json data with api token provided above
     r = requests.get(api_url_base_weather, params={"APPID": api_token_weather})
@@ -64,18 +63,26 @@ try:
                   'name'], axis=1)
 
     # Access met weather (for rainfall in mm) data html table and convert into data frame
-    df_rainfall = pd.read_html('https://www.met.ie/latest-reports/observations', header=1)
+    df_rainfall = pd.read_html('https://www.met.ie/latest-reports/observations', header=1)[0]
+
+    df_rainfall.columns = ['Location',
+                           'Dir',
+                           'Speed Kts(Km/h)',
+                           'Gust Kts(Km/h)',
+                           'Weather',
+                           'oC',
+                           '(%)',
+                           '(mm)',
+                           '(hPa)']
 
     # Drop columns that will not be used
-    df_rainfall = df_rainfall[0].drop(['Dir', 'Speed Kts(Km/h)',
-                                       'Gust Kts(Km/h)', 'Weather',
-                                       'oC', '(%)', '(hPa)'], axis=1)
-
+    df_rainfall = df_rainfall.drop(['Dir', 'Speed Kts(Km/h)',
+                                       'Gust Kts(Km/h)', 'oC', '(%)', '(hPa)'], axis=1)
     # Filter location to Dublin for new df
     df_rainfall = df_rainfall.loc[df_rainfall['Location'] == 'Dublin']
 
     # Add rainfall column to existing core dataframe
-    df['rainfall_mm'] = df_rainfall.iloc[0]['(mm)']
+    df['rainfall_mm'] = df_rainfall['(mm)'].values
 
     # Send the data frame to the RDS database table "current_weather"
     weather_to_db(df)
@@ -109,4 +116,5 @@ except:
     print(traceback.format_exc())
     f.write(traceback.format_exc())
     f.close()
+
 
