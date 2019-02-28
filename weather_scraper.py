@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 
 import json
 import pandas as pd
@@ -109,3 +109,4 @@ except:
     print(traceback.format_exc())
     f.write(traceback.format_exc())
     f.close()
+
