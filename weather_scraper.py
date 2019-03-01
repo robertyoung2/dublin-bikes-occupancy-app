@@ -62,6 +62,14 @@ try:
     df = df.drop(['weather', 'base', 'coord.lat', 'coord.lon', 'sys.country', 'sys.message', 'sys.id', 'sys.type',
                   'name'], axis=1)
 
+    # List of openweathermap optional api parameters
+    optional_list = ['rain.1h', 'rain.3h', 'snow.1h', 'snow.3h']
+
+    #If optional api item is in the list, drop it
+    for api_item in optional_list:
+        if api_item in df:
+            df = df.drop([api_item], axis=1)
+
     # Access met weather (for rainfall in mm) data html table and convert into data frame
     df_rainfall = pd.read_html('https://www.met.ie/latest-reports/observations', header=1)[0]
 
