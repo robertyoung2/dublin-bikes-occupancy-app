@@ -63,7 +63,7 @@ try:
                   'name'], axis=1)
 
     # List of openweathermap optional api parameters
-    optional_list = ['rain.1h', 'rain.3h', 'snow.1h', 'snow.3h']
+    optional_list = ['rain.1h', 'rain.3h', 'snow.1h', 'snow.3h', 'wind.gust']
 
     #If optional api item is in the list, drop it
     for api_item in optional_list:
