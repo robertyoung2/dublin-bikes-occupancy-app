@@ -8,6 +8,8 @@ and notify the team via the dublin-bikes Slack channel.
 
 Required packages. Use _"conda install PACKAGE\_NAME"_:
 
+
+### sql
 * scikit-learn
 * pandas
 * numpy (installed as part of scikit-learn)
@@ -16,6 +18,8 @@ Required packages. Use _"conda install PACKAGE\_NAME"_:
 * sqlalchemy 
 * jupyter
 * PyMySQL
+
+### flask
 * flask
 * conda install beautifulsoup4 
 
