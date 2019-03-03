@@ -7,7 +7,6 @@ from sqlalchemy import create_engine
 import traceback
 import os
 import datetime
-from bs4 import BeautifulSoup
 
 # API weather URI for city ID "Dublin, IE"
 api_url_base_weather = ***REMOVED***
@@ -22,7 +21,6 @@ PASSWORD = ***REMOVED***
 
 # Use sqlalchemy to log into the database
 engine = create_engine("mysql+pymysql://{}:{}@{}:{}/{}".format(USER, PASSWORD, URI, PORT, DB), echo=True)
-
 
 # Function to connect to Amazon RDS and upload dataframe to database
 def weather_to_db(df):
@@ -58,21 +56,10 @@ try:
     df['icon'] = df['weather'][0][0]['icon']
     df['weather_id'] = df['weather'][0][0]['id']
 
-    # Dropped internal system and static data https://openweathermap.org/weather-data
-    df = df.drop(['weather', 'base', 'coord.lat', 'coord.lon', 'sys.country', 'sys.message', 'sys.id', 'sys.type',
-                  'name'], axis=1)
-
-    # List of openweathermap optional api parameters
-    optional_list = ['rain.1h', 'rain.3h', 'snow.1h', 'snow.3h', 'wind.gust']
-
-    #If optional api item is in the list, drop it
-    for api_item in optional_list:
-        if api_item in df:
-            df = df.drop([api_item], axis=1)
-
     # Access met weather (for rainfall in mm) data html table and convert into data frame
     df_rainfall = pd.read_html('https://www.met.ie/latest-reports/observations', header=1)[0]
 
+    # Rename the columns from the Met Eireann HTML table as EC2 not accept otherwise
     df_rainfall.columns = ['Location',
                            'Dir',
                            'Speed Kts(Km/h)',
@@ -83,17 +70,26 @@ try:
                            '(mm)',
                            '(hPa)']
 
-    # Drop columns that will not be used
-    df_rainfall = df_rainfall.drop(['Dir', 'Speed Kts(Km/h)',
-                                       'Gust Kts(Km/h)', 'oC', '(%)', '(hPa)'], axis=1)
     # Filter location to Dublin for new df
     df_rainfall = df_rainfall.loc[df_rainfall['Location'] == 'Dublin']
 
     # Add rainfall column to existing core dataframe
     df['rainfall_mm'] = df_rainfall['(mm)'].values
 
+    # Create a new dataframe to be pushed to the database
+    df_to_database = pd.DataFrame()
+
+    # List of existing dataframe columns
+    database_columns = ['last_update', 'clouds.all', 'cod', 'id', 'description', 'main_weather', 'main.temp',
+                        'rainfall_mm', 'main.humidity', 'main.pressure', 'visibility', 'wind.speed', 'wind.deg',
+                        'main.temp_max', 'main.temp_min', 'sys.sunrise', 'sys.sunset', 'dt', 'icon', 'weather_id']
+
+    # Create a new database using only the column names that exist in the database
+    for names in database_columns:
+        df_to_database[names] = df[names]
+
     # Send the data frame to the RDS database table "current_weather"
-    weather_to_db(df)
+    weather_to_db(df_to_database)
 
     # Check if csv exists, if not, create one
     csv_exists = os.path.isfile('data_backup_weather.csv')
@@ -124,5 +120,3 @@ except:
     print(traceback.format_exc())
     f.write(traceback.format_exc())
     f.close()
-
-
