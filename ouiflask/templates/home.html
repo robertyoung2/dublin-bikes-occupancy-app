@@ -1,22 +1,32 @@
 {% extends "layout.html" %}
 {% block content %}
 
-    <h1>OuiBike from OuiTeam</h1>
+    <h1>{{ test }}</h1>
     <h2>With the help of ouiFlask</h2>
+    <h3>{{ stationIDposted }}</h3>
+
+        <!-- div for displaying station infos -->
+        <div id="displayStation"></div>
 
     <!-- Create a drop down menue where the user can select a station -->
     <div id="dropdown">
         <!-- On change will call the function takeStationID  -->
         <select id="stationSelector" onchange="takeStationID()">
             {% for row in results: %}
-                <option value="{{row[0]}}">{{row[0]}}</option>
+                <option value="{{row[3]}}">{{row[0]}}</option>
             {% endfor %}
         </select>
     </div>
 
+    <!-- map container -->
     <div id="map" style="width:100%;height:400px;"></div>
 
-    <div id="displayStation"></div>
+<!-- form to get the id of the station posted in the back end -->
+    <form action="" id="station_form" method="post">
+        <input type="hidden" id="formStationID" name="stationID" value="">
+    </form>
+
+
 
     <script type="text/javascript">
 
@@ -138,6 +148,10 @@
 
             // use the value to populate a div but should call another function that retrive data from the RDS.
             document.getElementById("displayStation").innerHTML = "You selected station " + x;
+
+            // change the value of the form
+            document.getElementById("formStationID").value = x;
+            document.getElementById("station_form").submit();
         }
 
 
