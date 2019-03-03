@@ -86,7 +86,7 @@ try:
 
     # Create a new database using only the column names that exist in the database
     for names in database_columns:
-        if names in df.columns:
+        if names in df.columns and df[names].values != None:
             df_to_database[names] = df[names]
         else:
             df_to_database[names] = None
