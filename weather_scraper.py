@@ -86,7 +86,10 @@ try:
 
     # Create a new database using only the column names that exist in the database
     for names in database_columns:
-        df_to_database[names] = df[names]
+        if names in df.columns:
+            df_to_database[names] = df[names]
+        else:
+            df_to_database[names] = None
 
     # Send the data frame to the RDS database table "current_weather"
     weather_to_db(df_to_database)
