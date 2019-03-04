@@ -21,9 +21,11 @@ Required packages. Use _"conda install PACKAGE\_NAME"_:
 
 ### flask
 * flask
-* conda install -c conda-forge flask-sqlalchemy 
-* conda install -c anaconda flask-wtf 
+* conda install beautifulsoup4 
 
+Optional:
+
+* matplotlib (for data analytics/plotting)
 
 Current venv: ouiteam_v2.
 
