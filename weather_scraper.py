@@ -94,6 +94,9 @@ try:
     # Send the data frame to the RDS database table "current_weather"
     weather_to_db(df_to_database)
 
+    # Rebase database for backup purposes
+    df = df_to_database
+
     # Check if csv exists, if not, create one
     csv_exists = os.path.isfile('data_backup_weather.csv')
     if not csv_exists:
