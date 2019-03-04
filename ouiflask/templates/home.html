@@ -20,7 +20,7 @@
 
     <script type="text/javascript">
 
-        var markers = []; //initialise empty array for storing all markers
+        var dict = {};
         var map;
 
         //important to declare infowindow here so it can be accessed by both dop() and addMarkerWithTimeout() functions
@@ -35,7 +35,7 @@
             Calls function to create markers
              */
 
-            //create map pbject
+            //create map object
             map = new google.maps.Map(document.getElementById('map'), {
                 center: new google.maps.LatLng(53.349013,-6.260311), //starting location
                 zoom: 13 //starting zoom level
@@ -97,7 +97,6 @@
                 i++; //augmenting loop counter for timout offset
 
             {% endfor %}
-
         }
 
 
@@ -127,7 +126,7 @@
                    infowindow.open(map, marker);
                });
 
-               markers.push(marker); // adds the just created marker to an array containing all markers
+                dict[name] = marker;
 
             }, timeout);
         }
@@ -138,8 +137,9 @@
 
             // use the value to populate a div but should call another function that retrive data from the RDS.
             document.getElementById("displayStation").innerHTML = "You selected station " + x;
+            var selectedStation = dict[x];
+            google.maps.event.trigger(selectedStation, 'click');
         }
-
 
     </script>
 
