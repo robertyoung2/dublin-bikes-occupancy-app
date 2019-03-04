@@ -126,6 +126,7 @@
                    infowindow.open(map, marker);
                });
 
+               // Creates a marker with key value pairs {stationName: markerObject,....}
                 dict[name] = marker;
 
             }, timeout);
@@ -137,7 +138,13 @@
 
             // use the value to populate a div but should call another function that retrive data from the RDS.
             document.getElementById("displayStation").innerHTML = "You selected station " + x;
+
+            // initialises a variable that references the marker object from dictionary with the key of the station
+            // name selected in the dropdown menu
             var selectedStation = dict[x];
+
+            // Triggers the 'click' listener even of the marker object corresponding to the selected station from
+            // dropdown menu
             google.maps.event.trigger(selectedStation, 'click');
         }
 
