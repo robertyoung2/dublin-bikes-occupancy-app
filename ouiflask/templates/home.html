@@ -22,6 +22,8 @@
 
         var dict = {};
         var map;
+        var userZoomed = false;
+        var zoomListener;
 
         //important to declare infowindow here so it can be accessed by both dop() and addMarkerWithTimeout() functions
         var infowindow = null;
@@ -39,6 +41,12 @@
             map = new google.maps.Map(document.getElementById('map'), {
                 center: new google.maps.LatLng(53.349013,-6.260311), //starting location
                 zoom: 13 //starting zoom level
+            });
+
+            zoomListener = map.addListener('zoom_changed', function() {
+                // infowindow.setContent('Zoom: ' + map.getZoom());
+                userZoomed = true;
+                console.log("userZoomed");
             });
 
             //once map object has been made, create markers. Markers are dependant on map so map must be created first
@@ -124,6 +132,13 @@
                    infowindow.close();
                    infowindow.setContent(contentString);
                    infowindow.open(map, marker);
+                   map.setCenter(marker.getPosition());
+
+                   if(!userZoomed){
+                       map.setZoom(17);
+                       google.maps.event.removeListener(zoomListener);
+                   }
+
                });
 
                // Creates a marker with key value pairs {stationName: markerObject,....}
