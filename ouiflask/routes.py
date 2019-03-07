@@ -69,3 +69,4 @@ def home():
     # Passing the list "result" into the home.html page as variable "results"
         return render_template('home.html', results=result, test=test)
     """
+# AJAX First comit
