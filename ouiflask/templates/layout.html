@@ -4,15 +4,23 @@
     <!-- Required meta tags -->
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
-
+    
     <!-- Static CSS -->
     <!--<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">-->
-
+    
+    <!-- Jquery -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    
+    <!-- define the root of the page for ajax request -->
+    <script type=text/javascript>
+        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+    
     <style>
         <span class="metadata-marker" style="display: none;" data-region_tag="css"></span>      /* Always set the map height explicitly to define the size of the div
         * element that contains the map. */
         #map {
-         height: 100%;
+            height: 100%;
         }
         /* Optional: Makes the sample page fill the window. */
         html, body {
@@ -21,13 +29,13 @@
             padding: 0;
         }
     </style>
-
+    
     {% if title %}
-        <title>OuiBike - {{ title }}</title>
+    <title>OuiBike - {{ title }}</title>
     {% else %}
-        <title>OuiBike</title>
+    <title>OuiBike</title>
     {% endif %}
-
+    
     
 </head>
 <body>

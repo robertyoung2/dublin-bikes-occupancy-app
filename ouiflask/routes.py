@@ -1,4 +1,4 @@
-from flask import render_template, request, flash
+from flask import render_template, request, flash, jsonify
 from ouiflask import app
 from sqlalchemy import create_engine
 # import json #Not using yet
@@ -41,10 +41,14 @@ result = Convert(myTuple, myList)
 
 connection.close() # Close engine connection to tidy up resources
 
+"""
 @app.route("/stationDetail/<StationID>")
-def stationDetail(StationID = StationID):
+def stationDetail():
     # jinja to transform into jason
-    return StationID
+    return 
+"""
+
+
 
 #Allows access to home.html through the browser by typing either /home or nothing at the end of url
 @app.route("/", methods=["GET","POST"])
