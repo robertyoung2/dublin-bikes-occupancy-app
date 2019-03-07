@@ -41,11 +41,18 @@ result = Convert(myTuple, myList)
 
 connection.close() # Close engine connection to tidy up resources
 
+@app.route("/stationDetail/<StationID>")
+def stationDetail(StationID = StationID):
+    # jinja to transform into jason
+    return StationID
+
 #Allows access to home.html through the browser by typing either /home or nothing at the end of url
 @app.route("/", methods=["GET","POST"])
 @app.route("/home", methods=["GET","POST"])
 def home():
     test = "1er"
+    return render_template('home.html', results=result, test=test)
+    """
     try:
         if request.method == "POST":
             test = "posted"
@@ -61,3 +68,4 @@ def home():
         flash(e)
     # Passing the list "result" into the home.html page as variable "results"
         return render_template('home.html', results=result, test=test)
+    """

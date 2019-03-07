@@ -22,10 +22,11 @@
     <div id="map" style="width:100%;height:400px;"></div>
 
 <!-- form to get the id of the station posted in the back end -->
+<!--
     <form action="" id="station_form" method="post">
         <input type="hidden" id="formStationID" name="stationID" value="">
     </form>
-
+-->
 
 
     <script type="text/javascript">
@@ -95,6 +96,7 @@
                 //What's being assigned here is the values from "address" column in DB as the actual "name"
                 // column values are all upper case
                 name = '{{row[0]}}';
+                number = '{{ row[3] }}';
 
 
                 // This is where we format and populate the information that is going to make up the infowindow
@@ -110,7 +112,7 @@
                 //This function is called passing long/lat values for current station, timeout value for stagger drop
                 // animation, the image var with set properties for marker icon, as well as the name of station to use
                 // as title for marker metadata
-                addMarkerWithTimeout({{row[1]}},{{row[2]}}, i * 10, image, name, contentString);
+                addMarkerWithTimeout({{row[1]}},{{row[2]}}, i * 10, image, name, contentString, number);
 
                 i++; //augmenting loop counter for timout offset
 
@@ -118,7 +120,7 @@
         }
 
 
-        function addMarkerWithTimeout(latitude, longitude, timeout, image, name, contentString) {
+        function addMarkerWithTimeout(latitude, longitude, timeout, image, name, contentString, number) {
             //window.SetTimeout is a built-in function which adds a wait time after every function call before
             // the programme continues. This is how the marker drops are stagger when the page loads
             // It's wrapped within another function so that parameters can be passed and accessed easily.
@@ -152,7 +154,8 @@
                });
 
                // Creates a marker with key value pairs {stationName: markerObject,....}
-                dict[name] = marker;
+                dict[number] = marker;
+                
 
             }, timeout);
         }
@@ -172,9 +175,13 @@
             // dropdown menu
             google.maps.event.trigger(selectedStation, 'click');
 
+            // var FromBackEnd = "{{ url_for('stationDetail' ) }}"
+            // use AJAX to post data on the back end
+  
             // change the value of the form
-            document.getElementById("formStationID").value = x;
-            document.getElementById("station_form").submit();
+            // document.getElementById("formStationID").value = x;
+            // document.getElementById("station_form").submit();
+            
         }
 
     </script>
