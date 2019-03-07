@@ -12,3 +12,7 @@ __pycache__/
 data_backup\.csv
 
 data\.txt
+
+data_backup_weather\.csv
+
+data_weather\.txt
