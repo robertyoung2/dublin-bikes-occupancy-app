@@ -26,15 +26,14 @@ Function to convert SQLAlchemy ResultProxy execute(query) return type into pytho
 If details added to the query, make sure to account for them in this function also
 This function could auto adjust for extra variables added to query using nested for loop. Implement later
 """
-def Convert(myTuple, myList):
-    for add, lat, lng, number in myTuple:
-        myList.append([add, lat, lng, number])
-    return myList
+def convert_ResultProxy_to_Array(resultProxy):
+    newArray = []
+    for row in resultProxy:
+        for element in row:
+            newArray.append(element)
+    return newArray
 
-
-myTuple = result
-myList = []
-result = Convert(myTuple, myList)
+result = convert_ResultProxy_to_Array(result)
 
 
 # JSON_result = json.dumps(result) #convert list into JSON format (removed atm as having issues with formatting)
@@ -69,3 +68,23 @@ def home():
     # Passing the list "result" into the home.html page as variable "results"
         return render_template('home.html', results=result, test=test)
     """
+
+
+
+#FIRST CMOMIT
+def dynamicQuery(stationID):
+
+    connection = engine.connect()  # connects the engine to the database
+
+    """
+    SQL query to get data from RDS db stations table
+    To populate more details on the InfoWindow, add them to query here
+    """
+    result = connection.execute("SELECT last_update, available_bike_stands, available_bikes, address "
+                                "FROM station_status, stations "
+                                "WHERE station_status.number = stations.number "
+                                "ORDER BY last_update DESC LIMIT 1")
+
+    result = convert_ResultProxy_to_Array(result)
+
+    return result
