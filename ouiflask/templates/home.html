@@ -169,10 +169,12 @@
                     
                     // Triggers the 'click' listener even of the marker object corresponding to the selected station from
                     // dropdown menu
+                    // the google map event will call the ajax function AjaxCommunicationForStationID
                     google.maps.event.trigger(selectedStation, 'click');
                     
                     // call the function making the ajax call
-                    AjaxCommunicationForStationID(x);   
+                    //  not needed since the google.maps.event.trigger call it
+                    // AjaxCommunicationForStationID(x);   
                 }
                 
                 // function that pass the stationID to the back end and do something with the response
