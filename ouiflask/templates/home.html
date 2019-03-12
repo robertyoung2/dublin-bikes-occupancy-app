@@ -1,25 +1,23 @@
 {% extends "layout.html" %}
 {% block content %}
 
-    <h1>{{ test }}</h1>
-    <h2>With the help of ouiFlask</h2>
-    <h3>{{ stationIDposted }}</h3>
+<h1>{{ test }}</h1>
+<h2>With the help of ouiFlask</h2>
+<h3>{{ stationIDposted }}</h3>
 
-        <!-- div for displaying station infos -->
-        <div id="displayStation"></div>
 
-    <!-- Create a drop down menue where the user can select a station -->
-    <div id="dropdown">
-        <!-- On change will call the function takeStationID  -->
-        <select id="stationSelector" onchange="takeStationID()">
-            {% for row in results: %}
-                <option value="{{row[3]}}">{{row[0]}}</option>
-            {% endfor %}
-        </select>
-    </div>
+<!-- Create a drop down menue where the user can select a station -->
+<div id="dropdown">
+    <!-- On change will call the function takeStationID  -->
+    <select id="stationSelector" onchange="takeStationID()">
+        {% for row in results: %}
+        <option value="{{row[3]}}">{{row[0]}}</option>
+        {% endfor %}
+    </select>
+</div>
 
-    <!-- map container -->
-    <div id="map" style="width:100%;height:400px;"></div>
+<!-- map container -->
+<div id="map" style="width:100%;height:400px;"></div>
 
 <!-- form to get the id of the station posted in the back end -->
 <!--
@@ -29,164 +27,181 @@
 -->
 
 
-    <script type="text/javascript">
-
-        var dict = {};
-        var map;
-        var userZoomed = false;
-        var zoomListener;
-
-        //important to declare infowindow here so it can be accessed by both dop() and addMarkerWithTimeout() functions
-        var infowindow = null;
-
-
-        function initMap() {
-            /*
-            function to initialise map, called from the google maps URL at the bottom of page
-            creates map object, sets initial location to Dublin, sets initial zoom level
-            assigns map object to variable "map"
-            Calls function to create markers
-             */
-
-            //create map object
-            map = new google.maps.Map(document.getElementById('map'), {
-                center: new google.maps.LatLng(53.349013,-6.260311), //starting location
-                zoom: 13 //starting zoom level
-            });
-
-            zoomListener = map.addListener('zoom_changed', function() {
-                // infowindow.setContent('Zoom: ' + map.getZoom());
-                userZoomed = true;
-                console.log("userZoomed");
-            });
-
-            //once map object has been made, create markers. Markers are dependant on map so map must be created first
-            createMarkers();
-        }
-
-        function createMarkers() {
-            /*
-            Creates placeholder infowindow object
-            Defines marker icon
-            Loops through nested list from SQL query (passed from routes.py as results)
-            Each row is a list of static station information (later will expand for dynamic info also)
-            Each station is created as a marker by calling addMarkerWithTimeout function and passes current row values
-            as arguements
-            */
-
-            // Create placeholder infowindow object
-            // Could make this more robust by first checking to see if any rows exist in results as there's no point
-            // making info window for station without any stations
-            infowindow = new google.maps.InfoWindow({
-                    content: "Nothing yet"
-            });
-
-            // setting parameters for icon we're going to use for markers
-            var image = {
-                url: '/static/icon_dublinbikes.png', //the image itself
-                scaledSize: new google.maps.Size(50, 50) // resizing image to 50% smaller
-            };
-
-            // a counter for the loop below to assist with calculating timeout value for staggering drop animation
-            var i = 0;
-
-            //Loop through results (SQL query nested list), each row is a different station with all it's values
-            {% for row in results: %}
-
-                //What's being assigned here is the values from "address" column in DB as the actual "name"
-                // column values are all upper case
-                name = '{{row[0]}}';
-                number = '{{ row[3] }}';
-
-
-                // This is where we format and populate the information that is going to make up the infowindow
-                var contentString = '<div id="content">'+
-                '<div id="siteNotice">'+
+<script type="text/javascript">
+    
+    var dict = {};
+    var map;
+    var userZoomed = false;
+    var zoomListener;
+    
+    //important to declare infowindow here so it can be accessed by both dop() and addMarkerWithTimeout() functions
+    var infowindow = null;
+    
+    
+    function initMap() {
+        /*
+        function to initialise map, called from the google maps URL at the bottom of page
+        creates map object, sets initial location to Dublin, sets initial zoom level
+        assigns map object to variable "map"
+        Calls function to create markers
+        */
+        
+        //create map object
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: new google.maps.LatLng(53.349013,-6.260311), //starting location
+            zoom: 13 //starting zoom level
+        });
+        
+        zoomListener = map.addListener('zoom_changed', function() {
+            // infowindow.setContent('Zoom: ' + map.getZoom());
+            userZoomed = true;
+            console.log("userZoomed");
+        });
+        
+        //once map object has been made, create markers. Markers are dependant on map so map must be created first
+        createMarkers();
+    }
+    
+    function createMarkers() {
+        /*
+        Creates placeholder infowindow object
+        Defines marker icon
+        Loops through nested list from SQL query (passed from routes.py as results)
+        Each row is a list of static station information (later will expand for dynamic info also)
+        Each station is created as a marker by calling addMarkerWithTimeout function and passes current row values
+        as arguements
+        */
+        
+        // Create placeholder infowindow object
+        // Could make this more robust by first checking to see if any rows exist in results as there's no point
+        // making info window for station without any stations
+        infowindow = new google.maps.InfoWindow({
+            content: "Nothing yet"
+        });
+        
+        // setting parameters for icon we're going to use for markers
+        var image = {
+            url: '/static/icon_dublinbikes.png', //the image itself
+            scaledSize: new google.maps.Size(50, 50) // resizing image to 50% smaller
+        };
+        
+        // a counter for the loop below to assist with calculating timeout value for staggering drop animation
+        var i = 0;
+        
+        //Loop through results (SQL query nested list), each row is a different station with all it's values
+        {% for row in results: %}
+        
+        //What's being assigned here is the values from "address" column in DB as the actual "name"
+        // column values are all upper case
+        name = '{{row[0]}}';
+        number = '{{ row[3] }}';
+        
+        
+        // This is where we format and populate the information that is going to make up the infowindow
+        var contentString = '<div id="content">'+
+            '<div id="siteNotice">'+
                 '</div>'+
                 '<h1 id="firstHeading" class="firstHeading">'+ name +'</h1>'+ // "name" variable is passed here
                 '<div id="bodyContent">'+
-                '<p></p>'+
-                '</div>'+
-                '</div>';
-
-                //This function is called passing long/lat values for current station, timeout value for stagger drop
-                // animation, the image var with set properties for marker icon, as well as the name of station to use
-                // as title for marker metadata
-                addMarkerWithTimeout({{row[1]}},{{row[2]}}, i * 10, image, name, contentString, number);
-
-                i++; //augmenting loop counter for timout offset
-
-            {% endfor %}
-        }
-
-
-        function addMarkerWithTimeout(latitude, longitude, timeout, image, name, contentString, number) {
-            //window.SetTimeout is a built-in function which adds a wait time after every function call before
-            // the programme continues. This is how the marker drops are stagger when the page loads
-            // It's wrapped within another function so that parameters can be passed and accessed easily.
-            window.setTimeout(function() {
-
-                // create the marker object
-               var marker = new google.maps.Marker({
-                    position: {lat: latitude, lng: longitude},
-                    map: map,
-                    title: name,
-                    animation: google.maps.Animation.DROP,
-                    icon: image
-                });
-
-               /*
-               Add an event listener to marker created above which calls function to close any open infowindows
-               reset the content of the infowindow variable to the value of contentString when lister is
-               created. And opens the infowindow
-               */
-               google.maps.event.addListener(marker, 'click', function(){
-                   infowindow.close();
-                   infowindow.setContent(contentString);
-                   infowindow.open(map, marker);
-                   map.setCenter(marker.getPosition());
-
-                   if(!userZoomed){
-                       map.setZoom(17);
-                       google.maps.event.removeListener(zoomListener);
-                   }
-
-               });
-
-               // Creates a marker with key value pairs {stationName: markerObject,....}
-                dict[number] = marker;
+                    '<p></p>'+
+                    '</div>'+
+                    '</div>';
+                    
+                    //This function is called passing long/lat values for current station, timeout value for stagger drop
+                    // animation, the image var with set properties for marker icon, as well as the name of station to use
+                    // as title for marker metadata
+                    addMarkerWithTimeout({{row[1]}},{{row[2]}}, i * 10, image, name, contentString, number);
+                    
+                    i++; //augmenting loop counter for timout offset
+                    
+                    {% endfor %}
+                }
                 
+                
+                function addMarkerWithTimeout(latitude, longitude, timeout, image, name, contentString, number) {
+                    //window.SetTimeout is a built-in function which adds a wait time after every function call before
+                    // the programme continues. This is how the marker drops are stagger when the page loads
+                    // It's wrapped within another function so that parameters can be passed and accessed easily.
+                    window.setTimeout(function() {
+                        
+                        // create the marker object
+                        var marker = new google.maps.Marker({
+                            position: {lat: latitude, lng: longitude},
+                            map: map,
+                            title: name,
+                            animation: google.maps.Animation.DROP,
+                            icon: image
+                        });
+                        
+                        /*
+                        Add an event listener to marker created above which calls function to close any open infowindows
+                        reset the content of the infowindow variable to the value of contentString when lister is
+                        created. And opens the infowindow
+                        */
+                        google.maps.event.addListener(marker, 'click', function(){
+                            infowindow.close();
+                            infowindow.setContent(contentString);
+                            infowindow.open(map, marker);
+                            map.setCenter(marker.getPosition());
+                            
+                            if(!userZoomed){
+                                map.setZoom(17);
+                                google.maps.event.removeListener(zoomListener);
+                            }
+                            // call the function making the ajax call
+                            AjaxCommunicationForStationID(number);  
+                        });
+                        
+                        // Creates a marker with key value pairs {stationName: markerObject,....}
+                        dict[number] = marker;
+                        
+                        
+                    }, timeout);
+                }
+                
+                function takeStationID() {
+                    // retrive the station that the user selected in the drop down menue
+                    var x = document.getElementById("stationSelector").value
+                    
+                    // initialises a variable that references the marker object from dictionary with the key of the station
+                    // name selected in the dropdown menu
+                    var selectedStation = dict[x];
+                    
+                    // Triggers the 'click' listener even of the marker object corresponding to the selected station from
+                    // dropdown menu
+                    google.maps.event.trigger(selectedStation, 'click');
+                    
+                    // call the function making the ajax call
+                    AjaxCommunicationForStationID(x);   
+                }
+                
+                // function that pass the stationID to the back end and do something with the response
+                function AjaxCommunicationForStationID (stationID){
 
-            }, timeout);
-        }
-
-        function takeStationID() {
-            // retrive the station that the user selected in the drop down menue
-            var x = document.getElementById("stationSelector").value;
-
-            // use the value to populate a div but should call another function that retrive data from the RDS.
-            document.getElementById("displayStation").innerHTML = "You selected station " + x;
-
-            // initialises a variable that references the marker object from dictionary with the key of the station
-            // name selected in the dropdown menu
-            var selectedStation = dict[x];
-
-            // Triggers the 'click' listener even of the marker object corresponding to the selected station from
-            // dropdown menu
-            google.maps.event.trigger(selectedStation, 'click');
-
+                    // AjAX call
+                    $.ajax({
+                        type: "POST",
+                        // put stationID in the post call so the back end can have access to the stationID
+                        data:{stationID: stationID},
+                        // will use the function stationDetail() in the routes.py file
+                        url: $SCRIPT_ROOT + '/stationDetail',
+                        dataType: "json",
+                        // when the python function return (Ajax have a response of 200 succcess) we can do something with the data returned
+                        success: function(data) { 
+                            // TO DO: make something usefull with the retrived data
+                            console.log(data);                    
+                        },
+                        // If there is a problem with the ajax request we retrive the error
+                        error: function(jqXHR) {
+                            console.log(jqXHR);
+                        }
+                    })
+                }
+                
+            </script>
             
-            // use AJAX to post data on the back end
-  
-            // change the value of the form
-            // document.getElementById("formStationID").value = x;
-            // document.getElementById("station_form").submit();
+            <!--Note the "=initMap" at the end of this URL, this calls the initMap() function on page load-->
+            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3jfCg18B1ksPENyBJTzmkM78Uva1XiKw&callback=initMap"></script>
             
-        }
-
-    </script>
-
-    <!--Note the "=initMap" at the end of this URL, this calls the initMap() function on page load-->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3jfCg18B1ksPENyBJTzmkM78Uva1XiKw&callback=initMap"></script>
-
-{% endblock content %}
+            {% endblock content %}
+            

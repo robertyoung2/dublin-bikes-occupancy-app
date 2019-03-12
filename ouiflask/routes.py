@@ -41,36 +41,21 @@ result = Convert(myTuple, myList)
 
 connection.close() # Close engine connection to tidy up resources
 
-"""
-@app.route("/stationDetail/<StationID>")
+# this route is called by a javascript (AJAX) call
+@app.route("/stationDetail", methods=["GET","POST"])
 def stationDetail():
-    # jinja to transform into jason
-    return 
-"""
+    # assign the value stationID from the ajax post
+    stationID = request.form['stationID']
+    # make a dictionary with some data
+    d = {"stationID": stationID, "text":"ici"}
+    # return a json object to the front end that can be used by jinja
+    return jsonify(d)
 
 
 
 #Allows access to home.html through the browser by typing either /home or nothing at the end of url
-@app.route("/", methods=["GET","POST"])
-@app.route("/home", methods=["GET","POST"])
+@app.route("/")
+@app.route("/home")
 def home():
-    test = "1er"
-    return render_template('home.html', results=result, test=test)
-    """
-    try:
-        if request.method == "POST":
-            test = "posted"
-            flash("posted something")
-            stationID = request.form['stationID']
-            return render_template('home.html', results=result, test=test, stationIDposted=stationID)
-        return render_template('home.html', results=result, test=test)
-
-
-
-    except Exception as e:
-        test = "excepted"
-        flash(e)
-    # Passing the list "result" into the home.html page as variable "results"
-        return render_template('home.html', results=result, test=test)
-    """
-# AJAX First comit
+    return render_template('home.html', results=result)
+    
