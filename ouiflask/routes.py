@@ -1,4 +1,4 @@
-from flask import render_template, request, flash
+from flask import render_template, request, flash, jsonify
 from ouiflask import app
 from sqlalchemy import create_engine
 # import json #Not using yet
@@ -40,38 +40,25 @@ result = convert_ResultProxy_to_Array(result)
 
 connection.close() # Close engine connection to tidy up resources
 
-@app.route("/stationDetail/<StationID>")
-def stationDetail(StationID = StationID):
-    # jinja to transform into jason
-    return StationID
+# this route is called by a javascript (AJAX) call
+@app.route("/stationDetail", methods=["GET","POST"])
+def stationDetail():
+    # assign the value stationID from the ajax post
+    stationID = request.form['stationID']
+    # make a dictionary with some data
+    d = {"stationID": stationID, "text":"ici"}
+    # return a json object to the front end that can be used by jinja
+    return jsonify(d)
+
+
 
 #Allows access to home.html through the browser by typing either /home or nothing at the end of url
-@app.route("/", methods=["GET","POST"])
-@app.route("/home", methods=["GET","POST"])
+@app.route("/")
+@app.route("/home")
 def home():
-    test = "1er"
-    return render_template('home.html', results=result, test=test)
-    """
-    try:
-        if request.method == "POST":
-            test = "posted"
-            flash("posted something")
-            stationID = request.form['stationID']
-            return render_template('home.html', results=result, test=test, stationIDposted=stationID)
-        return render_template('home.html', results=result, test=test)
+    return render_template('home.html', results=result)
+    
 
-
-
-    except Exception as e:
-        test = "excepted"
-        flash(e)
-    # Passing the list "result" into the home.html page as variable "results"
-        return render_template('home.html', results=result, test=test)
-    """
-
-
-
-#FIRST CMOMIT
 def dynamicQuery(stationID):
 
     connection = engine.connect()  # connects the engine to the database
