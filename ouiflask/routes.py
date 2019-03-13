@@ -33,7 +33,17 @@ def convert_ResultProxy_to_Array(resultProxy):
             newArray.append(element)
     return newArray
 
-result = convert_ResultProxy_to_Array(result)
+def Convert(myTuple, myList):
+    for add, lat, lng, number in myTuple:
+        myList.append([add, lat, lng, number])
+    return myList
+
+
+myTuple = result
+myList = []
+result = Convert(myTuple, myList)
+
+# result = convert_ResultProxy_to_Array(result)
 
 
 # JSON_result = json.dumps(result) #convert list into JSON format (removed atm as having issues with formatting)
@@ -47,8 +57,9 @@ def stationDetail():
     stationID = request.form['stationID']
     # make a dictionary with some data
     d = {"stationID": stationID, "text":"ici"}
+    result = dynamicQuery(stationID)
     # return a json object to the front end that can be used by jinja
-    return jsonify(d)
+    return jsonify(result)
 
 
 
@@ -67,11 +78,14 @@ def dynamicQuery(stationID):
     SQL query to get data from RDS db stations table
     To populate more details on the InfoWindow, add them to query here
     """
-    result = connection.execute("SELECT last_update, available_bike_stands, available_bikes, address "
+    sql = ("SELECT last_update, available_bike_stands, available_bikes, name "
                                 "FROM station_status, stations "
-                                "WHERE station_status.number = stations.number "
+                                "WHERE station_status.number = "+ stationID + " and station_status.number = stations.number "
                                 "ORDER BY last_update DESC LIMIT 1")
-
-    result = convert_ResultProxy_to_Array(result)
-
+    try:
+        result = connection.execute(sql)
+        result = convert_ResultProxy_to_Array(result)
+        connection.close() # Close engine connection to tidy up resources
+    except Exception as e:
+        result = e
     return result
