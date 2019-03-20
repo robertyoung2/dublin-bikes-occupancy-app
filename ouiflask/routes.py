@@ -55,8 +55,7 @@ connection.close() # Close engine connection to tidy up resources
 def stationDetail():
     # assign the value stationID from the ajax post
     stationID = request.form['stationID']
-    # make a dictionary with some data
-    d = {"stationID": stationID, "text":"ici"}
+
     result = dynamicQuery(stationID)
     # return a json object to the front end that can be used by jinja
     return jsonify(result)
