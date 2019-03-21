@@ -3,8 +3,11 @@
 
 <h1>{{ test }}</h1>
 <h2>With the help of ouiFlask</h2>
-<h3>{{ stationIDposted }}</h3>
+<h3></h3>
 
+<div id="weather"></div>
+
+<div id="infoStation"></div>
 
 <!-- Create a drop down menue where the user can select a station -->
 <div id="dropdown">
@@ -21,6 +24,8 @@
 
 
 <script type="text/javascript">
+
+    getWeather()
     
     var dict = {};
     var map;
@@ -181,15 +186,40 @@
             url: $SCRIPT_ROOT + '/stationDetail',
             dataType: "json",
             // when the python function return (Ajax have a response of 200 succcess) we can do something with the data returned
-            success: function(data) { 
+            success: function(station) { 
                 // TO DO: make something usefull with the retrived data
-                console.log(data);                    
+                console.log(station); 
+                
+                var infoStationHtml = "Station " + station.name + " have " + station.available_bikes+" available bikes and " +station.available_bike_stands+ " free bike stand" ;
+                document.getElementById("infoStation").innerHTML = infoStationHtml;
+
             },
             // If there is a problem with the ajax request we retrive the error
             error: function(jqXHR) {
                 console.log(jqXHR);
             }
         })
+    }
+
+    function getWeather (){
+
+    // AjAX call
+    $.ajax({
+        type: "POST",
+        // will use the function stationDetail() in the routes.py file
+        url: $SCRIPT_ROOT + '/getWeather',
+        // when the python function return (Ajax have a response of 200 succcess) we can do something with the data     returned
+        success: function(weather) { 
+            // TO DO: make something usefull with the retrived data
+            console.log(weather);
+            var weatherHtml = "we are the "+ weather.last_update +" and today the weather is"+ weather.description ;
+            document.getElementById("weather").innerHTML = weatherHtml;
+        },
+        // If there is a problem with the ajax request we retrive the error
+        error: function(jqXHR) {
+            console.log(jqXHR);
+        }
+    })
     }
                 
 </script>

@@ -1,4 +1,4 @@
-from flask import render_template, request, flash, jsonify
+from flask import render_template, request, flash, jsonify, make_response
 from ouiflask import app, SQLAlchemyConnection
 
 
@@ -7,6 +7,7 @@ from ouiflask import app, SQLAlchemyConnection
 @app.route("/home")
 def home():
     result = SQLAlchemyConnection.staticQuery()
+
     return render_template('home.html', results=result)
     
 
@@ -19,3 +20,9 @@ def stationDetail():
     result = SQLAlchemyConnection.dynamicQuery(stationID)
     # return a json object to the front end that can be used by jinja
     return jsonify(result)
+
+@app.route("/getWeather", methods=["POST"])
+def getWeather():
+    weather = SQLAlchemyConnection.todayWeather()
+
+    return jsonify(weather)

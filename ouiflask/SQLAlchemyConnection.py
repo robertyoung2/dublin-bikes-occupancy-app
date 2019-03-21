@@ -1,4 +1,5 @@
 from sqlalchemy import create_engine
+from sqlalchemy.sql import column, text
 
 
 USER=***REMOVED***
@@ -33,7 +34,28 @@ def Convert(myTuple, myList):
     return myList
 
     
+def todayWeather():
+    connection = engine.connect()
 
+    sql = text("SELECT last_update, description "
+                                "FROM current_weather "
+                                "ORDER BY last_update DESC LIMIT 1")
+        
+    sql = sql.columns(
+            column('last_update'),
+            column('description')
+        )
+    
+    result = connection.execute(sql)
+    
+    d=dict()
+    for row in result:
+        d["last_update"]=row["last_update"]
+        d["description"]=row["description"]
+
+    connection.close()
+    
+    return d 
 
 
 
@@ -55,28 +77,31 @@ def dynamicQuery(stationID):
     SQL query to get data from RDS db stations table
     To populate more details on the InfoWindow, add them to query here
     """
-    sql = ("SELECT last_update, available_bike_stands, available_bikes, name "
+    sql = text("SELECT last_update, available_bike_stands, available_bikes, name "
                                 "FROM station_status, stations "
                                 "WHERE station_status.number = "+ stationID + " and station_status.number = stations.number "
                                 "ORDER BY last_update DESC LIMIT 1")
+
+    sql = sql.columns(
+            column('last_update'),
+            column('available_bike_stands'),
+            column('available_bikes'),
+            column('name')
+        )
     try:
         result = connection.execute(sql)
-        result = convert_ResultProxy_to_Array(result)
+
+        d=dict()
+
+        for row in result:
+            d["last_update"]=row["last_update"]
+            d["available_bike_stands"]=row["available_bike_stands"]
+            d["available_bikes"]=row["available_bikes"]
+            d["name"]=row["name"]
+
         connection.close() # Close engine connection to tidy up resources
     except Exception as e:
         result = e
-    return result
+        return result
 
-def convert_ResultProxy_to_Array(resultProxy):
-    """
-    Adapted from https://www.geeksforgeeks.org/python-convert-list-tuples-dictionary/
-    Function to convert SQLAlchemy ResultProxy execute(query) return type into python list = [[add, lat, lng],[...]]
-    If details added to the query, make sure to account for them in this function also
-    This function could auto adjust for extra variables added to query using nested for loop. Implement later
-    """
-
-    newArray = []
-    for row in resultProxy:
-        for element in row:
-            newArray.append(element)
-    return newArray
+    return d
