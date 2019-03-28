@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.sql import column, text
+from functools import lru_cache
 
 
 USER=***REMOVED***
@@ -11,6 +12,7 @@ DB = ***REMOVED***
 #The engine stores the log in details used to connect to RDS instance
 engine = create_engine("mysql+pymysql://{}:{}@{}:{}/{}".format(USER, PASSWORD, URI, PORT, DB), echo=True)
 
+@lru_cache(maxsize=128)
 def staticQuery():
     connection = engine.connect() #connects the engine to the database
 
