@@ -147,7 +147,11 @@
                     google.maps.event.removeListener(zoomListener);
                 }
                 // call the function making the ajax call
-                AjaxCommunicationForStationID(number);  
+                AjaxCommunicationForStationID(number);
+
+                AjaxCommunicationForBikeGraph(number);
+
+
             });
  
             // Creates a marker with key value pairs {stationName: markerObject,....}
@@ -175,7 +179,7 @@
     }
                 
     // function that pass the stationID to the back end and do something with the response
-    function AjaxCommunicationForStationID (stationID){
+    function AjaxCommunicationForStationID(stationID){
 
         // AjAX call
         $.ajax({
@@ -187,19 +191,48 @@
             dataType: "json",
             // when the python function return (Ajax have a response of 200 succcess) we can do something with the data returned
             success: function(station) { 
-                // TO DO: make something usefull with the retrived data
+                // TO DO: make something useful with the retrieved data
                 console.log(station); 
                 
                 var infoStationHtml = "Station " + station.name + " have " + station.available_bikes+" available bikes and " +station.available_bike_stands+ " free bike stand" ;
                 document.getElementById("infoStation").innerHTML = infoStationHtml;
 
             },
-            // If there is a problem with the ajax request we retrive the error
+            // If there is a problem with the ajax request we retrieve the error
             error: function(jqXHR) {
                 console.log(jqXHR);
             }
         })
     }
+
+
+    // function that pass the stationID to the back end and do something with the response
+    function AjaxCommunicationForBikeGraph(stationID){
+        console.log("Here now")
+        // AjAX call
+        $.ajax({
+            type: "POST",
+            // put stationID in the post call so the back end can have access to the stationID
+            data:{stationID: stationID},
+            // will use the function bikeGraph() in the routes.py file
+            url: $SCRIPT_ROOT + '/bikeGraph',
+            dataType: "json",
+
+            // when the python function return (Ajax have a response of 200 succcess) we can do something with the data returned
+            success: function(station) {
+                // TO DO: make something useful with the retrieved data
+                console.log(station);
+                drawBasic(station)
+
+            },
+            // If there is a problem with the ajax request we retrieve the error
+            error: function(jqXHR) {
+                console.log(jqXHR);
+            }
+        })
+    }
+
+
 
     function getWeather (){
 
@@ -230,9 +263,36 @@
 
 
 <!-- Graphs -->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<div id="chart_div"></div>
 
+<script>
+google.charts.load('current', {packages: ['corechart', 'line']});
+// google.charts.setOnLoadCallback(drawBasic);
 
+function drawBasic(data) {
 
+      var data = new google.visualization.DataTable();
+      data.addColumn('number', 'X');
+      data.addColumn('number', 'Bikes');
+
+      data.addRows(data);
+
+      var options = {
+        hAxis: {
+          title: 'Time'
+        },
+        vAxis: {
+          title: 'Popularity'
+        }
+      };
+
+      var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+
+      chart.draw(data, options);
+    }
+
+</script>
 
 {% endblock content %}
             

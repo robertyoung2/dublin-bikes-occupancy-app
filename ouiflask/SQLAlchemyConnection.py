@@ -1,6 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.sql import column, text
 from functools import lru_cache
+import pandas as pd
+from flask import jsonify
 
 
 USER=***REMOVED***
@@ -107,3 +109,20 @@ def dynamicQuery(stationID):
         return result
 
     return d
+
+
+def get_station_occupancy_weekly(station_id):
+    conn = engine.connect()
+    station_id = str(station_id)
+    days = ['Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun']
+    sql = "select * from station_status where number = " + station_id
+    df = pd.read_sql_query(sql, conn, params={" + station_id + ": station_id})
+    df['last_update_date'] = pd.to_datetime(df.last_update, unit='ns')
+    df.set_index('last_update_date', inplace=True)
+    df['weekday'] = df.index.weekday
+    mean_available_stands = df[['available_bike_stands','weekday']].groupby('weekday').mean()
+    mean_available_bikes = df[['available_bikes', 'weekday']].groupby('weekday').mean()
+    mean_available_stands.index = days
+    mean_available_bikes.index = days
+    return jsonify(mean_available_stands=mean_available_stands.to_json())
+
