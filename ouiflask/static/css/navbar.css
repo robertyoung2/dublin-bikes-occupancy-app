@@ -1,0 +1,56 @@
+nav {
+    overflow: hidden;
+    text-align: center;
+    background-color: rgb(45, 75, 85);
+}
+
+#left{
+    text-align: left;
+    float:left;
+}
+
+#centre {
+    text-align: center;
+}
+
+#right{
+    text-align: right;
+    float: right;
+}
+
+.inner{
+    display: inline-block;
+}
+
+
+#logo{
+    height: 75px;
+}
+
+
+#weatherIcon{
+    float:left;
+}
+
+#weatherDescription{
+    float: left;
+    border: 200px;
+    color: whitesmoke;
+    margin-left: 20px;
+}
+
+#weatherTemp{
+    color:whitesmoke;
+    float: left;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+#pageTitle{
+    float: left;
+    color: whitesmoke;
+}
+
+#dropdown{
+    /*float: left;*/
+}

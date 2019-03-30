@@ -1,23 +1,46 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<h1>{{ test }}</h1>
-<h2>With the help of ouiFlask</h2>
-<h3></h3>
+<!--        Navigation Bar -->
+<nav>
+    <span id="left">
+        <h1 class="inner" id="pageTitle">Oui Flask</h1>
 
-<div id="weather"></div>
+        <!-- Create a drop down menue where the user can select a station -->
+        <div id="dropdown">
+            <!-- On change will call the function takeStationID  -->
+            <select id="stationSelector" onchange="takeStationID()">
+                {% for row in results: %}
+                <option value="{{row[3]}}">{{row[0]}}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-<div id="infoStation"></div>
+    </span>
 
-<!-- Create a drop down menue where the user can select a station -->
-<div id="dropdown">
-    <!-- On change will call the function takeStationID  -->
-    <select id="stationSelector" onchange="takeStationID()">
-        {% for row in results: %}
-        <option value="{{row[3]}}">{{row[0]}}</option>
-        {% endfor %}
-    </select>
-</div>
+    <span id="centre">
+        <div class="inner">
+            <img id="logo" src="static/dublin_bikes.png">
+        </div>
+    </span>
+
+    <span id="right">
+        <div class="inner">
+            <img id="weatherIcon">
+            <h4 id="weatherDescription"></h4>
+            <h2 id="weatherTemp"></h2>
+        </div>
+    </span>
+</nav>
+
+
+<!--<h1>{{ test }}</h1>-->
+<!--<h2>With the help of ouiFlask</h2>-->
+<!--<h3></h3>-->
+
+<!--<div id="weather"></div>-->
+
+<!--<div id="infoStation"></div>-->
 
 <!-- map container -->
 <div id="map" style="width:100%;height:400px;"></div>
@@ -96,15 +119,13 @@
         
         
         // This is where we format and populate the information that is going to make up the infowindow
-        var contentString = '<div id="content">'+
-            '<div id="siteNotice">'+
-                '</div>'+
-                '<h1 id="firstHeading" class="firstHeading">'+ name +'</h1>'+ // "name" variable is passed here
-                '<div id="bodyContent">'+
-                    '<p></p>'+
-                    '</div>'+
-                    '</div>';
-                    
+        var contentString =
+            '<div id="infoWindowContent{{ row[3] }}">'+
+                '<h1 id="firstHeading{{ row[3] }}" class="firstHeading">'+ name +'</h1>'+ // "name" variable is passed here
+                '<div id="bodyContent{{ row[3] }}"></div>'+
+            '</div>';
+
+        // console.log(contentString);
         //This function is called passing long/lat values for current station, timeout value for stagger drop
         // animation, the image var with set properties for marker icon, as well as the name of station to use
         // as title for marker metadata
@@ -192,11 +213,16 @@
             // when the python function return (Ajax have a response of 200 succcess) we can do something with the data returned
             success: function(station) { 
                 // TO DO: make something useful with the retrieved data
-                console.log(station); 
-                
-                var infoStationHtml = "Station " + station.name + " have " + station.available_bikes+" available bikes and " +station.available_bike_stands+ " free bike stand" ;
-                document.getElementById("infoStation").innerHTML = infoStationHtml;
+                // console.log(station);
+                //
+                // var infoStationHtml = "Station " + station.name + " have " + station.available_bikes+" available bikes and " +station.available_bike_stands+ " free bike stand" ;
+                // document.getElementById("infoStation").innerHTML = infoStationHtml;
 
+                var bodyContentID = "bodyContent" + stationID;
+
+                document.getElementById(bodyContentID).innerHTML =
+                    "<div>Available Bikes: "+station.available_bikes+"</div>" +
+                    "<div>Available Stands: "+station.available_bike_stands+"</div>";
             },
             // If there is a problem with the ajax request we retrieve the error
             error: function(jqXHR) {
@@ -208,7 +234,6 @@
 
     // function that pass the stationID to the back end and do something with the response
     function AjaxCommunicationForBikeGraph(stationID){
-        console.log("Here now")
         // AjAX call
         $.ajax({
             type: "POST",
@@ -241,14 +266,18 @@
         type: "POST",
         // will use the function stationDetail() in the routes.py file
         url: $SCRIPT_ROOT + '/getWeather',
-        // when the python function return (Ajax have a response of 200 succcess) we can do something with the data     returned
+        // when the python function return (Ajax have a response of 200 success) we can do something with the data     returned
         success: function(weather) { 
-            // TO DO: make something usefull with the retrived data
-            console.log(weather);
-            var weatherHtml = "we are the "+ weather.last_update +" and today the weather is"+ weather.description ;
-            document.getElementById("weather").innerHTML = weatherHtml;
+            // TO DO: make something useful with the retrieved data
+            // console.log(weather);
+            // var weatherHtml = "we are the "+ weather.last_update +" and today the weather is "+ weather.description ;
+            // document.getElementById("weather").innerHTML = weatherHtml;
+
+            document.getElementById("weatherTemp").innerHTML = Math.round(weather.temp - 273.15) + " &#8451" ;
+            document.getElementById("weatherDescription").innerHTML = weather.description;
+            document.getElementById("weatherIcon").src = "http://openweathermap.org/img/w/"+weather.icon+".png";
         },
-        // If there is a problem with the ajax request we retrive the error
+        // If there is a problem with the ajax request we retrieve the error
         error: function(jqXHR) {
             console.log(jqXHR);
         }
@@ -266,7 +295,6 @@
 <!-- Graphs -->
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
-<button id="btn" type="button" class="btn btn-primary">Primary</button>
 
 <!--<div id="chart_1"></div>-->
 

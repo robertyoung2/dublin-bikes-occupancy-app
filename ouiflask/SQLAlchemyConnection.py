@@ -41,21 +41,27 @@ def Convert(myTuple, myList):
 def todayWeather():
     connection = engine.connect()
 
-    sql = text("SELECT last_update, description "
-                                "FROM current_weather "
-                                "ORDER BY last_update DESC LIMIT 1")
-        
+    sql = text("SELECT last_update, description, icon , `main.temp`"
+               "FROM current_weather "
+               "ORDER BY last_update DESC LIMIT 1")
+
     sql = sql.columns(
             column('last_update'),
-            column('description')
+            column('description'),
+            column('icon'),
+            column('main.temp')
         )
-    
+
+    print("Before Query")
     result = connection.execute(sql)
-    
+    print("After Query")
+
     d=dict()
     for row in result:
         d["last_update"]=row["last_update"]
         d["description"]=row["description"]
+        d["icon"]=row["icon"]
+        d["temp"]=row["main.temp"]
 
     connection.close()
     
