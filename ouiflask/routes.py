@@ -27,7 +27,6 @@ def stationDetail():
 # this route is called by a javascript (AJAX) call
 @app.route("/bikeGraph", methods=["GET","POST"])
 def bikeGraph():
-    app.logger.info('Routing the graphs')
 
     # assign the value stationID from the ajax post
     stationID = request.form['stationID']

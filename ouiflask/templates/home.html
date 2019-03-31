@@ -1,341 +1,379 @@
 {% extends "layout.html" %}
 {% block content %}
+<div id="flexContainer">
+    <!--        Navigation Bar -->
+    <nav>
+        <div id="navLeft">
+            <h1 class="inner" id="pageTitle">Oui Flask</h1>
 
-<!--        Navigation Bar -->
-<nav>
-    <span id="left">
-        <h1 class="inner" id="pageTitle">Oui Flask</h1>
+            <!-- Create a drop down menu where the user can select a station -->
+            <div id="dropdown">
+                <!-- On change will call the function takeStationID  -->
+                <select id="stationSelector" onchange="takeStationID()">
+                    {% for row in results: %}
+                    <option value="{{row[3]}}">{{row[0]}}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-        <!-- Create a drop down menue where the user can select a station -->
-        <div id="dropdown">
-            <!-- On change will call the function takeStationID  -->
-            <select id="stationSelector" onchange="takeStationID()">
-                {% for row in results: %}
-                <option value="{{row[3]}}">{{row[0]}}</option>
-                {% endfor %}
-            </select>
         </div>
 
-    </span>
-
-    <span id="centre">
-        <div class="inner">
-            <img id="logo" src="static/dublin_bikes.png">
+        <div id="navCentre">
+            <div class="inner">
+                <img id="logo" src="static/dublin_bikes.png">
+            </div>
         </div>
-    </span>
 
-    <span id="right">
-        <div class="inner">
+        <div id="navRight" class="weatherContainer">
             <img id="weatherIcon">
             <h4 id="weatherDescription"></h4>
             <h2 id="weatherTemp"></h2>
         </div>
-    </span>
-</nav>
+    </nav>
 
 
-<!--<h1>{{ test }}</h1>-->
-<!--<h2>With the help of ouiFlask</h2>-->
-<!--<h3></h3>-->
+    <!--<h1>{{ test }}</h1>-->
+    <!--<h2>With the help of ouiFlask</h2>-->
+    <!--<h3></h3>-->
 
-<!--<div id="weather"></div>-->
+    <!--<div id="weather"></div>-->
 
-<!--<div id="infoStation"></div>-->
+    <!--<div id="infoStation"></div>-->
 
-<!-- map container -->
-<div id="map" style="width:100%;height:400px;"></div>
+    <!-- map container -->
+    <div id="mapContainer">
+        <div id="map"></div>
+    </div>
 
 
-<script type="text/javascript">
 
-    getWeather()
-    
-    var dict = {};
-    var map;
-    var userZoomed = false;
-    var zoomListener;
-    
-    //important to declare infowindow here so it can be accessed by both dop() and addMarkerWithTimeout() functions
-    var infowindow = null;
-    
-    
-    function initMap() {
-        /*
-        function to initialise map, called from the google maps URL at the bottom of page
-        creates map object, sets initial location to Dublin, sets initial zoom level
-        assigns map object to variable "map"
-        Calls function to create markers
-        */
-        
-        //create map object
-        map = new google.maps.Map(document.getElementById('map'), {
-            center: new google.maps.LatLng(53.349013,-6.260311), //starting location
-            zoom: 13 //starting zoom level
-        });
-        
-        zoomListener = map.addListener('zoom_changed', function() {
-            // infowindow.setContent('Zoom: ' + map.getZoom());
-            userZoomed = true;
-            console.log("userZoomed");
-        });
-        
-        //once map object has been made, create markers. Markers are dependant on map so map must be created first
-        createMarkers();
-    }
-    
-    function createMarkers() {
-        /*
-        Creates placeholder infowindow object
-        Defines marker icon
-        Loops through nested list from SQL query (passed from routes.py as results)
-        Each row is a list of static station information (later will expand for dynamic info also)
-        Each station is created as a marker by calling addMarkerWithTimeout function and passes current row values
-        as arguements
-        */
-        
-        // Create placeholder infowindow object
-        // Could make this more robust by first checking to see if any rows exist in results as there's no point
-        // making info window for station without any stations
-        infowindow = new google.maps.InfoWindow({
-            content: "Nothing yet"
-        });
-        
-        // setting parameters for icon we're going to use for markers
-        var image = {
-            url: '/static/icon_dublinbikes.png', //the image itself
-            scaledSize: new google.maps.Size(50, 50) // resizing image to 50% smaller
-        };
-        
-        // a counter for the loop below to assist with calculating timeout value for staggering drop animation
-        var i = 0;
-        
-        //Loop through results (SQL query nested list), each row is a different station with all it's values
-        {% for row in results: %}
-        
-        //What's being assigned here is the values from "address" column in DB as the actual "name"
-        // column values are all upper case
-        name = '{{row[0]}}';
-        number = '{{ row[3] }}';
-        
-        
-        // This is where we format and populate the information that is going to make up the infowindow
-        var contentString =
-            '<div id="infoWindowContent{{ row[3] }}">'+
-                '<h1 id="firstHeading{{ row[3] }}" class="firstHeading">'+ name +'</h1>'+ // "name" variable is passed here
-                '<div id="bodyContent{{ row[3] }}"></div>'+
-            '</div>';
+    <script type="text/javascript">
 
-        // console.log(contentString);
-        //This function is called passing long/lat values for current station, timeout value for stagger drop
-        // animation, the image var with set properties for marker icon, as well as the name of station to use
-        // as title for marker metadata
-        addMarkerWithTimeout({{row[1]}},{{row[2]}}, i * 10, image, name, contentString, number);
-                    
-        i++; //augmenting loop counter for timout offset
-                    
-        {% endfor %}
-    }
-                
-                
-    function addMarkerWithTimeout(latitude, longitude, timeout, image, name, contentString, number) {
-        //window.SetTimeout is a built-in function which adds a wait time after every function call before
-        // the programme continues. This is how the marker drops are stagger when the page loads
-        // It's wrapped within another function so that parameters can be passed and accessed easily.
-        window.setTimeout(function() {
-                        
-            // create the marker object
-            var marker = new google.maps.Marker({
-                position: {lat: latitude, lng: longitude},
-                map: map,
-                title: name,
-                animation: google.maps.Animation.DROP,
-                icon: image
-            });
-                        
+        getWeather()
+
+        var dict = {};
+        var map;
+        var userZoomed = false;
+        var zoomListener;
+
+        //important to declare infowindow here so it can be accessed by both dop() and addMarkerWithTimeout() functions
+        var infowindow = null;
+
+
+        function initMap() {
             /*
-            Add an event listener to marker created above which calls function to close any opinfowindows
-            reset the content of the infowindow variable to the value of contentString when lister is
-            created. And opens the infowindow
+            function to initialise map, called from the google maps URL at the bottom of page
+            creates map object, sets initial location to Dublin, sets initial zoom level
+            assigns map object to variable "map"
+            Calls function to create markers
             */
-            google.maps.event.addListener(marker, 'click', function(){
-                infowindow.close();
-                infowindow.setContent(contentString);
-                infowindow.open(map, marker);
-                map.setCenter(marker.getPosition());
-                            
-                if(!userZoomed){
-                    map.setZoom(17);
-                    google.maps.event.removeListener(zoomListener);
-                }
-                // call the function making the ajax call
-                AjaxCommunicationForStationID(number);
 
-                AjaxCommunicationForBikeGraph(number);
-
-
+            //create map object
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: new google.maps.LatLng(53.349013,-6.260311), //starting location
+                zoom: 13 //starting zoom level
             });
- 
-            // Creates a marker with key value pairs {stationName: markerObject,....}
-            dict[number] = marker;
 
-        }, timeout);
-    }
-                
-    function takeStationID() {
-        // retrive the station that the user selected in the drop down menue
-        var x = document.getElementById("stationSelector").value
-        
-        // initialises a variable that references the marker object from dictionary with the key the station
-        // name selected in the dropdown menu
-        var selectedStation = dict[x];
-        
-        // Triggers the 'click' listener even of the marker object corresponding to the selectstation from
-        // dropdown menu
-        // the google map event will call the ajax function AjaxCommunicationForStationID
-        google.maps.event.trigger(selectedStation, 'click');
-        
-        // call the function making the ajax call
-        //  not needed since the google.maps.event.trigger call it
-        // AjaxCommunicationForStationID(x);   
-    }
-                
-    // function that pass the stationID to the back end and do something with the response
-    function AjaxCommunicationForStationID(stationID){
+            zoomListener = map.addListener('zoom_changed', function() {
+                // infowindow.setContent('Zoom: ' + map.getZoom());
+                userZoomed = true;
+                console.log("userZoomed");
+            });
 
-        // AjAX call
-        $.ajax({
-            type: "POST",
-            // put stationID in the post call so the back end can have access to the stationID
-            data:{stationID: stationID},
-            // will use the function stationDetail() in the routes.py file
-            url: $SCRIPT_ROOT + '/stationDetail',
-            dataType: "json",
-            // when the python function return (Ajax have a response of 200 succcess) we can do something with the data returned
-            success: function(station) { 
-                // TO DO: make something useful with the retrieved data
-                // console.log(station);
-                //
-                // var infoStationHtml = "Station " + station.name + " have " + station.available_bikes+" available bikes and " +station.available_bike_stands+ " free bike stand" ;
-                // document.getElementById("infoStation").innerHTML = infoStationHtml;
-
-                var bodyContentID = "bodyContent" + stationID;
-
-                document.getElementById(bodyContentID).innerHTML =
-                    "<div>Available Bikes: "+station.available_bikes+"</div>" +
-                    "<div>Available Stands: "+station.available_bike_stands+"</div>";
-            },
-            // If there is a problem with the ajax request we retrieve the error
-            error: function(jqXHR) {
-                console.log(jqXHR);
-            }
-        })
-    }
-
-
-    // function that pass the stationID to the back end and do something with the response
-    function AjaxCommunicationForBikeGraph(stationID){
-        // AjAX call
-        $.ajax({
-            type: "POST",
-            // put stationID in the post call so the back end can have access to the stationID
-            data:{stationID: stationID},
-            // will use the function bikeGraph() in the routes.py file
-            url: $SCRIPT_ROOT + '/bikeGraph',
-            dataType: "json",
-
-            // when the python function return (Ajax have a response of 200 succcess) we can do something with the data returned
-            success: function(station) {
-                // TO DO: make something useful with the retrieved data
-                console.log(station);
-                drawChart(station);
-
-            },
-            // If there is a problem with the ajax request we retrieve the error
-            error: function(jqXHR) {
-                console.log(jqXHR);
-            }
-        })
-    }
-
-
-
-    function getWeather (){
-
-    // AjAX call
-    $.ajax({
-        type: "POST",
-        // will use the function stationDetail() in the routes.py file
-        url: $SCRIPT_ROOT + '/getWeather',
-        // when the python function return (Ajax have a response of 200 success) we can do something with the data     returned
-        success: function(weather) { 
-            // TO DO: make something useful with the retrieved data
-            // console.log(weather);
-            // var weatherHtml = "we are the "+ weather.last_update +" and today the weather is "+ weather.description ;
-            // document.getElementById("weather").innerHTML = weatherHtml;
-
-            document.getElementById("weatherTemp").innerHTML = Math.round(weather.temp - 273.15) + " &#8451" ;
-            document.getElementById("weatherDescription").innerHTML = weather.description;
-            document.getElementById("weatherIcon").src = "http://openweathermap.org/img/w/"+weather.icon+".png";
-        },
-        // If there is a problem with the ajax request we retrieve the error
-        error: function(jqXHR) {
-            console.log(jqXHR);
+            //once map object has been made, create markers. Markers are dependant on map so map must be created first
+            createMarkers();
         }
-    })
+
+        function createMarkers() {
+            /*
+            Creates placeholder infowindow object
+            Defines marker icon
+            Loops through nested list from SQL query (passed from routes.py as results)
+            Each row is a list of static station information (later will expand for dynamic info also)
+            Each station is created as a marker by calling addMarkerWithTimeout function and passes current row values
+            as arguements
+            */
+
+            // Create placeholder infowindow object
+            // Could make this more robust by first checking to see if any rows exist in results as there's no point
+            // making info window for station without any stations
+            infowindow = new google.maps.InfoWindow({
+                content: "Nothing yet"
+            });
+
+            // setting parameters for icon we're going to use for markers
+            var image = {
+                url: '/static/icon_dublinbikes.png', //the image itself
+                scaledSize: new google.maps.Size(50, 50) // resizing image to 50% smaller
+            };
+
+            // a counter for the loop below to assist with calculating timeout value for staggering drop animation
+            var i = 0;
+
+            //Loop through results (SQL query nested list), each row is a different station with all it's values
+            {% for row in results: %}
+
+            //What's being assigned here is the values from "address" column in DB as the actual "name"
+            // column values are all upper case
+            name = '{{row[0]}}';
+            number = '{{ row[3] }}';
+
+
+            // This is where we format and populate the information that is going to make up the infowindow
+            var contentString =
+                '<div id="infoWindowContent{{ row[3] }}">'+
+                    '<h1 id="firstHeading{{ row[3] }}" class="firstHeading">'+ name +'</h1>'+ // "name" variable is passed here
+                    '<div id="bodyContent{{ row[3] }}"></div>'+
+                    '<button onclick="AjaxCommunicationForBikeGraph({{ row[3] }});">More Info</button>'
+                '</div>';
+
+            // console.log(contentString);
+            //This function is called passing long/lat values for current station, timeout value for stagger drop
+            // animation, the image var with set properties for marker icon, as well as the name of station to use
+            // as title for marker metadata
+            addMarkerWithTimeout({{row[1]}},{{row[2]}}, i * 10, image, name, contentString, number);
+
+            i++; //augmenting loop counter for timout offset
+
+            {% endfor %}
+        }
+
+
+        function addMarkerWithTimeout(latitude, longitude, timeout, image, name, contentString, number) {
+            //window.SetTimeout is a built-in function which adds a wait time after every function call before
+            // the programme continues. This is how the marker drops are stagger when the page loads
+            // It's wrapped within another function so that parameters can be passed and accessed easily.
+            window.setTimeout(function() {
+
+                // create the marker object
+                var marker = new google.maps.Marker({
+                    position: {lat: latitude, lng: longitude},
+                    map: map,
+                    title: name,
+                    animation: google.maps.Animation.DROP,
+                    icon: image
+                });
+
+                /*
+                Add an event listener to marker created above which calls function to close any opinfowindows
+                reset the content of the infowindow variable to the value of contentString when lister is
+                created. And opens the infowindow
+                */
+                google.maps.event.addListener(marker, 'click', function(){
+                    infowindow.close();
+                    infowindow.setContent(contentString);
+                    infowindow.open(map, marker);
+                    map.setCenter(marker.getPosition());
+
+                    if(!userZoomed){
+                        map.setZoom(17);
+                        google.maps.event.removeListener(zoomListener);
+                    }
+                    // call the function making the ajax call
+                    AjaxCommunicationForStationID(number);
+
+                });
+
+                // Creates a marker with key value pairs {stationName: markerObject,....}
+                dict[number] = marker;
+
+            }, timeout);
+        }
+
+        function takeStationID() {
+            // retrive the station that the user selected in the drop down menue
+            var x = document.getElementById("stationSelector").value
+
+            // initialises a variable that references the marker object from dictionary with the key the station
+            // name selected in the dropdown menu
+            var selectedStation = dict[x];
+
+            // Triggers the 'click' listener even of the marker object corresponding to the selectstation from
+            // dropdown menu
+            // the google map event will call the ajax function AjaxCommunicationForStationID
+            google.maps.event.trigger(selectedStation, 'click');
+
+            // call the function making the ajax call
+            //  not needed since the google.maps.event.trigger call it
+            // AjaxCommunicationForStationID(x);
+        }
+
+        // function that pass the stationID to the back end and do something with the response
+        function AjaxCommunicationForStationID(stationID){
+
+            // AjAX call
+            $.ajax({
+                type: "POST",
+                // put stationID in the post call so the back end can have access to the stationID
+                data:{stationID: stationID},
+                // will use the function stationDetail() in the routes.py file
+                url: $SCRIPT_ROOT + '/stationDetail',
+                dataType: "json",
+                // when the python function return (Ajax have a response of 200 succcess) we can do something with the data returned
+                success: function(station) {
+                    // TO DO: make something useful with the retrieved data
+                    // console.log(station);
+                    //
+                    // var infoStationHtml = "Station " + station.name + " have " + station.available_bikes+" available bikes and " +station.available_bike_stands+ " free bike stand" ;
+                    // document.getElementById("infoStation").innerHTML = infoStationHtml;
+
+                    var bodyContentID = "bodyContent" + stationID;
+
+                    document.getElementById(bodyContentID).innerHTML =
+                        "<div>Available Bikes: "+station.available_bikes+"</div>" +
+                        "<div>Available Stands: "+station.available_bike_stands+"</div>";
+                },
+                // If there is a problem with the ajax request we retrieve the error
+                error: function(jqXHR) {
+                    console.log(jqXHR);
+                }
+            })
+        }
+
+
+        // function that pass the stationID to the back end and do something with the response
+        function AjaxCommunicationForBikeGraph(stationID){
+            console.log("Querying: " + stationID);
+            // AjAX call
+            $.ajax({
+                type: "POST",
+                // put stationID in the post call so the back end can have access to the stationID
+                data:{stationID: stationID},
+                // will use the function bikeGraph() in the routes.py file
+                url: $SCRIPT_ROOT + '/bikeGraph',
+                dataType: "json",
+
+                // when the python function return (Ajax have a response of 200 succcess) we can do something with the data returned
+                success: function(station) {
+                    // TO DO: make something useful with the retrieved data
+                    // console.log(station);
+                    drawChart(station);
+
+                },
+                // If there is a problem with the ajax request we retrieve the error
+                error: function(jqXHR) {
+                    console.log(jqXHR);
+                }
+            })
+        }
+
+
+
+        function getWeather (){
+
+        // AjAX call
+        $.ajax({
+            type: "POST",
+            // will use the function stationDetail() in the routes.py file
+            url: $SCRIPT_ROOT + '/getWeather',
+            // when the python function return (Ajax have a response of 200 success) we can do something with the data     returned
+            success: function(weather) {
+                // TO DO: make something useful with the retrieved data
+                // console.log(weather);
+                // var weatherHtml = "we are the "+ weather.last_update +" and today the weather is "+ weather.description ;
+                // document.getElementById("weather").innerHTML = weatherHtml;
+
+                document.getElementById("weatherTemp").innerHTML = Math.round(weather.temp - 273.15) + " &#8451" ;
+                document.getElementById("weatherDescription").innerHTML = weather.description;
+                document.getElementById("weatherIcon").src = "http://openweathermap.org/img/w/"+weather.icon+".png";
+            },
+            // If there is a problem with the ajax request we retrieve the error
+            error: function(jqXHR) {
+                console.log(jqXHR);
+            }
+        })
+        }
+
+    </script>
+
+    <!--Note the "=initMap" at the end of this URL, this calls the initMap() function on page load-->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3jfCg18B1ksPENyBJTzmkM78Uva1XiKw&callback=initMap"></script>
+
+
+
+
+    <!-- Graphs -->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+    <div id="chartContainerOuter">
+        <div id="chartContainerInner">
+            <span class="chart" id="chart_1"></span>
+            <span class="chart" id="chart_2"></span>
+        </div>
+    </div>
+
+
+
+    <script>
+    google.load('visualization', '1.0', {
+      'packages': ['corechart']
+    });
+
+    // creates and populates a data table,
+    // instantiates the pie chart, passes in the data and
+    // draws it.
+    var chartVisible = false;
+    function drawChart(station_data) {
+        console.log("Drawing Graph!");
+        // console.log("Drawing Graph!");
+
+
+        var avgStandsData = station_data[0];
+        console.log("Avg Stands Data:")
+        console.log(avgStandsData[0]);
+        var avgBikesData = station_data[1];
+
+
+      // Create the data table.
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'weekday');
+      data.addColumn('number', 'stands');
+
+      console.log("About to add rows")
+      data.addRows(avgStandsData)
+        console.log("rows added");
+
+      // Set chart options
+      var options = {
+        'title': 'Avg. Available Bike Stands - ' + name,
+        'width': 600,
+        'height': 400,
+          // 'backgroundColor': 'rgb(53, 112, 158)',
+          backgroundColor: { fill:'transparent' },
+          series: {
+            0 : {color: 'rgb(71, 146, 209)'}
+          }
+      };
+
+      // Instantiate and draw our chart, passing in some options.
+      var chart = new google.visualization.LineChart(document.getElementById('chart_1'));
+      chart.draw(data, options);
+      //
+      // var chart2 = new google.visualization.BarChart(document.getElementById('chart_2'));
+      // chart2.draw(data, options);
+
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'weekday');
+      data.addColumn('number', 'bikes');
+
+      data.addRows(avgBikesData)
+
+      // Set chart options
+      var options = {
+        'title': 'Avg. Available Bikes - ' + name,
+        'width': 600,
+        'height': 400,
+          // 'backgroundColor': 'rgb(53, 112, 158)',
+          backgroundColor: { fill:'transparent' },
+          series: {
+            0 : {color: 'rgb(71, 146, 209)'}
+          }
+      };
+
+      var chart2 = new google.visualization.LineChart(document.getElementById('chart_2'));
+      chart2.draw(data, options);
     }
-                
-</script>
-            
-<!--Note the "=initMap" at the end of this URL, this calls the initMap() function on page load-->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3jfCg18B1ksPENyBJTzmkM78Uva1XiKw&callback=initMap"></script>
-
-
-
-
-<!-- Graphs -->
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-
-
-<!--<div id="chart_1"></div>-->
-
-<!--<div id="chart_2"></div>-->
-<div id="chart_3"></div>
-
-
-<script>
-google.load('visualization', '1.0', {
-  'packages': ['corechart']
-});
-
-// creates and populates a data table,
-// instantiates the pie chart, passes in the data and
-// draws it.
-function drawChart(station_data) {
-    // console.log(station_data)
-  // Create the data table.
-  var data = new google.visualization.DataTable();
-  data.addColumn('string', 'weekday');
-  data.addColumn('number', 'stands');
-  data.addRows(station_data)
-
-  // Set chart options
-  var options = {
-    'title': 'Avg. Available Bike Stands',
-    'width': 600,
-    'height': 400
-  };
-
-  // Instantiate and draw our chart, passing in some options.
-  // var chart = new google.visualization.PieChart(document.getElementById('chart_1'));
-  // chart.draw(data, options);
-  //
-  // var chart2 = new google.visualization.BarChart(document.getElementById('chart_2'));
-  // chart2.draw(data, options);
-
-  var chart3 = new google.visualization.LineChart(document.getElementById('chart_3'));
-  chart3.draw(data, options);
-}
-</script>
-
+    </script>
+</div>
 {% endblock content %}
             
