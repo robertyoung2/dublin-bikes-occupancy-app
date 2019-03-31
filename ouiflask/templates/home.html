@@ -121,11 +121,19 @@
 
             // This is where we format and populate the information that is going to make up the infowindow
             var contentString =
-                '<div id="infoWindowContent{{ row[3] }}">'+
-                    '<h1 id="firstHeading{{ row[3] }}" class="firstHeading">'+ name +'</h1>'+ // "name" variable is passed here
-                    '<div id="bodyContent{{ row[3] }}"></div>'+
-                    '<button onclick="AjaxCommunicationForBikeGraph({{ row[3] }});">More Info</button>'
-                '</div>';
+            `
+            <table id="infoWindowContent{{ row[3] }}">
+              <caption id="firstHeading{{ row[3] }}" class="firstHeading">`+ name +`</caption>
+              <tr>
+                <th>Available Bikes</th>
+                <th>Available Stands</th>
+              </tr>
+              <tr id="queryData{{ row[3] }}">
+              </tr>
+              <tr>
+                <td id="moreInfo" colspan="2"><button onclick="AjaxCommunicationForBikeGraph({{ row[3] }});">More Info</button></td>
+              </tr>
+            </table>`;
 
             // console.log(contentString);
             //This function is called passing long/lat values for current station, timeout value for stagger drop
@@ -217,11 +225,11 @@
                     // var infoStationHtml = "Station " + station.name + " have " + station.available_bikes+" available bikes and " +station.available_bike_stands+ " free bike stand" ;
                     // document.getElementById("infoStation").innerHTML = infoStationHtml;
 
-                    var bodyContentID = "bodyContent" + stationID;
+                    var queryData = "queryData" + stationID;
 
-                    document.getElementById(bodyContentID).innerHTML =
-                        "<div>Available Bikes: "+station.available_bikes+"</div>" +
-                        "<div>Available Stands: "+station.available_bike_stands+"</div>";
+                    document.getElementById(queryData).innerHTML =`
+                        <td>`+station.available_bikes+`</td>
+                        <td>`+station.available_bike_stands+`</td>`;
                 },
                 // If there is a problem with the ajax request we retrieve the error
                 error: function(jqXHR) {
