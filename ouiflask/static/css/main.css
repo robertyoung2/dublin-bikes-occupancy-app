@@ -1,0 +1,68 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: orange;
+}
+
+/*START Flexbox Properties*/
+#flexContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: auto;
+    display: flex;
+    background: rgb(86, 119, 136);
+    flex-direction: column;
+}
+
+
+nav{
+    background-color: rgb(45, 75, 85);
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+
+    padding: 10px;
+    flex: 0 0 auto;
+}
+
+#mapContainer{
+    flex: 1 0;
+    min-height: 400px;
+    background: blue;
+}
+
+#chartContainerOuter{
+    /*flex: 0 0 auto;*/
+    margin: 10px;
+
+    background: rgb(77, 120, 138);
+}
+/*END Flexbox Properties*/
+
+
+
+#map{
+    height: 100%;
+}
+
+
+#chartContainerInner{
+    /*display: inline-block;*/
+    display: flex;
+    flex-flow: row wrap;
+    /*align-items: center;*/
+    justify-content: center;
+}
+
+.chart{
+    float: left;
+    margin: 20px;
+    border-radius: 50px;
+}
+
+

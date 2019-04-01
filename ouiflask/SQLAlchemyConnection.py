@@ -1,6 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.sql import column, text
 from functools import lru_cache
+import pandas as pd
+from flask import jsonify
 
 
 USER=***REMOVED***
@@ -39,21 +41,27 @@ def Convert(myTuple, myList):
 def todayWeather():
     connection = engine.connect()
 
-    sql = text("SELECT last_update, description "
-                                "FROM current_weather "
-                                "ORDER BY last_update DESC LIMIT 1")
-        
+    sql = text("SELECT last_update, description, icon , `main.temp`"
+               "FROM current_weather "
+               "ORDER BY last_update DESC LIMIT 1")
+
     sql = sql.columns(
             column('last_update'),
-            column('description')
+            column('description'),
+            column('icon'),
+            column('main.temp')
         )
-    
+
+    print("Before Query")
     result = connection.execute(sql)
-    
+    print("After Query")
+
     d=dict()
     for row in result:
         d["last_update"]=row["last_update"]
         d["description"]=row["description"]
+        d["icon"]=row["icon"]
+        d["temp"]=row["main.temp"]
 
     connection.close()
     
@@ -107,3 +115,33 @@ def dynamicQuery(stationID):
         return result
 
     return d
+
+
+def get_station_occupancy_weekly(station_id):
+    conn = engine.connect()
+    station_id = str(station_id)
+    days = ['Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun']
+    sql = "select * from station_status where number = " + station_id
+    df = pd.read_sql_query(sql, conn, params={" + station_id + ": station_id})
+    df['last_update_date'] = pd.to_datetime(df.last_update, unit='ns')
+    df.set_index('last_update_date', inplace=True)
+    df['weekday'] = df.index.weekday
+
+
+
+    mean_available_stands = df[['available_bike_stands','available_bikes', 'weekday']].groupby('weekday').mean()
+    avg_avail_stands = []
+    avg_avail_bikes = []
+    i = 0
+
+    for index, row in mean_available_stands.iterrows():
+        avg_avail_stands.append([days[i], row["available_bike_stands"]])
+        avg_avail_bikes.append([days[i], row["available_bikes"]])
+        i += 1
+
+    combined_list = [avg_avail_stands, avg_avail_bikes]
+    print()
+    print(combined_list)
+    print()
+    return jsonify(combined_list)
+
