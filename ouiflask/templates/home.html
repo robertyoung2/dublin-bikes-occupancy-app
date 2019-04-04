@@ -37,8 +37,20 @@
         <div id="map"></div>
     </div>
 
+    <div id="chartContainerOuter">
+        <div id="chartContainerInner">
+            <span class="chart" id="chart_1"></span>
+            <span class="chart" id="chart_2"></span>
+            <canvas id="chart_3"></canvas>
+        </div>
+    </div>
 
 
+
+<!-- get the weather from back end -->
+<script src="static/js/getWeather.js"></script>
+
+<!-- javascript for creating the map -->
     <script type="text/javascript">
 
         getWeather()
@@ -180,132 +192,18 @@
             }, timeout);
         }
 
-        function takeStationID() {
-            // retrive the station that the user selected in the drop down menue
-            var x = document.getElementById("stationSelector").value
-
-            // initialises a variable that references the marker object from dictionary with the key the station
-            // name selected in the dropdown menu
-            var selectedStation = dict[x];
-
-            // Triggers the 'click' listener even of the marker object corresponding to the selectstation from
-            // dropdown menu
-            // the google map event will call the ajax function AjaxCommunicationForStationID
-            google.maps.event.trigger(selectedStation, 'click');
-
-            // call the function making the ajax call
-            //  not needed since the google.maps.event.trigger call it
-            // AjaxCommunicationForStationID(x);
-        }
-
-        // function that pass the stationID to the back end and do something with the response
-        function AjaxCommunicationForStationID(stationID){
-
-            // AjAX call
-            $.ajax({
-                type: "POST",
-                // put stationID in the post call so the back end can have access to the stationID
-                data:{stationID: stationID},
-                // will use the function stationDetail() in the routes.py file
-                url: $SCRIPT_ROOT + '/stationDetail',
-                dataType: "json",
-                // when the python function return (Ajax have a response of 200 succcess) we can do something with the data returned
-                success: function(station) {
-                    // TO DO: make something useful with the retrieved data
-                    // console.log(station);
-                    //
-                    // var infoStationHtml = "Station " + station.name + " have " + station.available_bikes+" available bikes and " +station.available_bike_stands+ " free bike stand" ;
-                    // document.getElementById("infoStation").innerHTML = infoStationHtml;
-
-                    var queryData = "queryData" + stationID;
-
-                    document.getElementById(queryData).innerHTML =`
-                        <td>`+station.available_bikes+`</td>
-                        <td>`+station.available_bike_stands+`</td>`;
-                },
-                // If there is a problem with the ajax request we retrieve the error
-                error: function(jqXHR) {
-                    console.log(jqXHR);
-                }
-            })
-        }
-
-
-        // function that pass the stationID to the back end and do something with the response
-        function AjaxCommunicationForBikeGraph(stationID){
-            console.log("Querying: " + stationID);
-            // AjAX call
-            $.ajax({
-                type: "POST",
-                // put stationID in the post call so the back end can have access to the stationID
-                data:{stationID: stationID},
-                // will use the function bikeGraph() in the routes.py file
-                url: $SCRIPT_ROOT + '/bikeGraph',
-                dataType: "json",
-
-                // when the python function return (Ajax have a response of 200 succcess) we can do something with the data returned
-                success: function(station) {
-                    // TO DO: make something useful with the retrieved data
-                    // console.log(station);
-                    drawChart(station);
-
-                },
-                // If there is a problem with the ajax request we retrieve the error
-                error: function(jqXHR) {
-                    console.log(jqXHR);
-                }
-            })
-        }
-
-
-
-        function getWeather (){
-
-        // AjAX call
-        $.ajax({
-            type: "POST",
-            // will use the function stationDetail() in the routes.py file
-            url: $SCRIPT_ROOT + '/getWeather',
-            // when the python function return (Ajax have a response of 200 success) we can do something with the data     returned
-            success: function(weather) {
-                // TO DO: make something useful with the retrieved data
-                // console.log(weather);
-                // var weatherHtml = "we are the "+ weather.last_update +" and today the weather is "+ weather.description ;
-                // document.getElementById("weather").innerHTML = weatherHtml;
-
-                document.getElementById("weatherTemp").innerHTML = Math.round(weather.temp - 273.15) + " &#8451" ;
-                document.getElementById("weatherDescription").innerHTML = weather.description;
-                document.getElementById("weatherIcon").src = "http://openweathermap.org/img/w/"+weather.icon+".png";
-            },
-            // If there is a problem with the ajax request we retrieve the error
-            error: function(jqXHR) {
-                console.log(jqXHR);
-            }
-        })
-        }
-
     </script>
 
-    <!--Note the "=initMap" at the end of this URL, this calls the initMap() function on page load-->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3jfCg18B1ksPENyBJTzmkM78Uva1XiKw&callback=initMap"></script>
+<!-- javascript to populate the station with bike available -->
+    <script src="static/js/takeStationID.js"></script>
 
+    <!-- script to make the graph -->
+    <script src="static/js/graph.js"></script>
 
-
-
-    <!-- Graphs -->
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-
-    <div id="chartContainerOuter">
-        <div id="chartContainerInner">
-            <span class="chart" id="chart_1"></span>
-            <span class="chart" id="chart_2"></span>
-            <canvas id="chart_3"></canvas>
-        </div>
-    </div>
-
-
-
-    <script>
+    <!-- Google Graphs -->
+    <!-- <script type="text/javascript" src="https://www.google.com/jsapi"></script> -->
+    <!-- <script src="static/js/googleGraphMaker.js"></script> -->
+    <!-- <script>
     google.load('visualization', '1.0', {
       'packages': ['corechart']
     });
@@ -314,109 +212,7 @@
     // instantiates the pie chart, passes in the data and
     // draws it.
     var chartVisible = false;
-    function drawChart(station_data) {
-        console.log("Drawing Graph!");
-        // console.log("Drawing Graph!");
-
-
-        var avgStandsData = station_data[0];
-        console.log("Avg Stands Data:")
-        console.log(avgStandsData[0]);
-        var avgBikesData = station_data[1];
-
-
-      // Create the data table.
-      var data = new google.visualization.DataTable();
-      data.addColumn('string', 'weekday');
-      data.addColumn('number', 'stands');
-
-      console.log("About to add rows")
-      data.addRows(avgStandsData)
-        console.log("rows added");
-
-      // Set chart options
-      var options = {
-        'title': 'Avg. Available Bike Stands - ' + name,
-        'width': 600,
-        'height': 400,
-          // 'backgroundColor': 'rgb(53, 112, 158)',
-          backgroundColor: { fill:'transparent' },
-          series: {
-            0 : {color: 'rgb(71, 146, 209)'}
-          }
-      };
-
-      // Instantiate and draw our chart, passing in some options.
-      var chart = new google.visualization.LineChart(document.getElementById('chart_1'));
-      chart.draw(data, options);
-      //
-      // var chart2 = new google.visualization.BarChart(document.getElementById('chart_2'));
-      // chart2.draw(data, options);
-
-      var data = new google.visualization.DataTable();
-      data.addColumn('string', 'weekday');
-      data.addColumn('number', 'bikes');
-
-      data.addRows(avgBikesData)
-
-      // Set chart options
-      var options = {
-        'title': 'Avg. Available Bikes - ' + name,
-        'width': 600,
-        'height': 400,
-          // 'backgroundColor': 'rgb(53, 112, 158)',
-          backgroundColor: { fill:'transparent' },
-          series: {
-            0 : {color: 'rgb(71, 146, 209)'}
-          }
-      };
-
-      var chart2 = new google.visualization.LineChart(document.getElementById('chart_2'));
-      chart2.draw(data, options);
-      drawChartJS(station_data)
-    }
-
-    function drawChartJS(station_data) {
-        var avgBikesData = station_data[1];
-        
-
-        var weekday = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-
-        var meanAvailableBikeWeakly = [];
-        for (let i = 0; i < avgBikesData.length; i++) {
-            meanAvailableBikeWeakly.push(avgBikesData[i][1]);
-        }
-        
-
-        var ctx = document.getElementById('chart_3').getContext('2d');
-        var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: weekday,
-            datasets: [{
-                label: 'Available bikes weekly',
-                data: meanAvailableBikeWeakly,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 1)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
-        });
-    }
-    </script>
+    </script> -->
 </div>
 {% endblock content %}
             

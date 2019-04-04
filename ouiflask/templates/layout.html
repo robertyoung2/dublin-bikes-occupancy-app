@@ -17,7 +17,7 @@
     </script>
 
     <style>
-        <span class="metadata-marker" style="display: none;" data-region_tag="css"></span>      /* Always set the map height explicitly to define the size of the div
+        <span class="metadata-marker" style="display: none;" data-region_tag="css"></span>      /* Always set the map height explicitly to define the size of the div */
     </style>
 
     {% if title %}
@@ -28,13 +28,16 @@
 
     <!-- Static CSS -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
-    <link rel="stylesheet" type="text/css" href="static/css/navbar.css">
-    <link rel="stylesheet" type="text/css" href="static/css/infowindow.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/infowindow.css') }}">
 
 </head>
 <body>
     <div>
         {% block content %}{% endblock %}
     </div>
+
+        <!--Note the "=initMap" at the end of this URL, this calls the initMap() function on page load-->
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3jfCg18B1ksPENyBJTzmkM78Uva1XiKw&callback=initMap"></script>
 </body>
 </html>
