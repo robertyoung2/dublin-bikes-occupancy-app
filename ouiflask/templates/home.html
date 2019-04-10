@@ -9,11 +9,15 @@
             <!-- Create a drop down menu where the user can select a station -->
             <div id="dropdown">
                 <!-- On change will call the function takeStationID  -->
-                <select id="stationSelector" onchange="takeStationID()">
-                    {% for row in results: %}
-                    <option value="{{row[3]}}">{{row[0]}}</option>
-                    {% endfor %}
-                </select>
+                <p>
+                    <label>bike station</label>
+                    <input class="autocomplete" type="text" list="stationsList"  id="stationSelector" onchange="takeStationID()">
+                    <datalist id="stationsList">
+                        {% for row in results: %}
+                        <option value="{{row[0]}}" data-value="{{row[3]}}"></option>
+                        {% endfor %}
+                    </datalist>
+                </p>
             </div>
 
         </div>
