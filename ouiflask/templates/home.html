@@ -20,16 +20,18 @@
 
         <div id="navCentre">
             <div class="inner">
-                <img id="logo" src="static/dublin_bikes.png">
+                <img id="logo" src="static/images/dublin_bikes.png">
             </div>
         </div>
 
         <div id="navRight" class="weatherContainer">
-            <img id="weatherIcon">
+            <img id="weatherIcon" class="svg">
             <h4 id="weatherDescription"></h4>
+            <img id="weatherThermometer" class="svg">
             <h2 id="weatherTemp"></h2>
         </div>
     </nav>
+
 
 
     <!-- map container -->
@@ -105,12 +107,6 @@
                 content: "Nothing yet"
             });
 
-            // setting parameters for icon we're going to use for markers
-            var image = {
-                url: '/static/icon_dublinbikes.png', //the image itself
-                scaledSize: new google.maps.Size(50, 50) // resizing image to 50% smaller
-            };
-
             // a counter for the loop below to assist with calculating timeout value for staggering drop animation
             var i = 0;
 
@@ -122,6 +118,7 @@
             name = '{{row[0]}}';
             number = '{{ row[3] }}';
 
+            var image = generate_heatmap({{row[4]}}, {{row[5]}});
 
             // This is where we format and populate the information that is going to make up the infowindow
             var contentString =

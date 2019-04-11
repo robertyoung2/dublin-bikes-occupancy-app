@@ -22,7 +22,11 @@ def staticQuery():
     SQL query to get data from RDS db stations table
     To populate more details on the InfoWindow, add them to query here
     """
-    result = connection.execute("select address, position_lat, position_lng, number from stations")
+    result = connection.execute("""SELECT DISTINCT address, position_lat, position_lng, station_status.number, available_bikes, available_bike_stands
+                                    FROM stations, station_status
+                                    WHERE station_status.number = stations.number 
+                                        AND `last_update` BETWEEN DATE_SUB(NOW() , INTERVAL 6 MINUTE) AND NOW()
+                                    ORDER BY last_update DESC;""")
 
     connection.close() # Close engine connection to tidy up resources
 
@@ -33,8 +37,11 @@ def staticQuery():
     return result
 
 def Convert(myTuple, myList):
-    for add, lat, lng, number in myTuple:
-        myList.append([add, lat, lng, number])
+    for add, lat, lng, number, available_bikes, available_bike_stands in myTuple:
+        myList.append([add, lat, lng, number, available_bikes, available_bike_stands])
+    print()
+    print(myList)
+    print()
     return myList
 
     
