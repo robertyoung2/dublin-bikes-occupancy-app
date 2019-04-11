@@ -11,6 +11,7 @@ from sklearn.model_selection import GridSearchCV
 import datetime
 import pickle
 import os
+import ast
 
 URI = ***REMOVED***
 DB = ***REMOVED***
@@ -66,7 +67,7 @@ def performance_metric(y_true, y_predict):
     return score
 
 
-def fit_model(X, y):
+def fit_model(X, y,models_score_dict, key_name):
     n_splits = int(len(X) / 20)
 
     cv_sets = TimeSeriesSplit(n_splits)
@@ -81,8 +82,15 @@ def fit_model(X, y):
 
     grid = grid.fit(X, y)
 
-    # Add in previous model and current model best score logic
-    # (grid.best_score_)
+    best_score = grid.best_score_
+
+    if key_name not in models_score_dict or models_score_dict[key_name] < best_score:
+        models_score_dict[key_name] = best_score
+        f = open('pickle_files/models_score_dict.txt', "w")
+        f.write(str(models_score_dict))
+        f.close()
+        # Return the optimal model after fitting the data
+        return grid.best_estimator_
 
     # Return the optimal model after fitting the data
     return grid.best_estimator_
@@ -102,17 +110,34 @@ def station_day_model(station_number, day_week, df_current, features):
             df_temp = df_temp.drop(index)
 
     df_current = df_temp
-
     X = df_current[features]
     y = df_current.available_bikes
 
-    reg = fit_model(X, y)
-
     file_name = "model_" + str(station_number) + "_" + day_week + ".pkl"
+    key_name = file_name[:-4]
 
-    with open("pickle_files/" + file_name, 'wb') as handle:
-        pickle.dump(reg, handle, pickle.HIGHEST_PROTOCOL)
+    f = open('pickle_files/models_score_dict.txt', "r")
+    models_score_dict = f.read()
+    models_score_dict = ast.literal_eval(models_score_dict)
+    f.close()
 
+    if key_name in models_score_dict:
+        previous_best_score = models_score_dict[key_name]
+    else:
+        previous_best_score = -9999999
+
+    reg = fit_model(X, y, models_score_dict, key_name)
+
+    f = open('pickle_files/models_score_dict.txt', "r")
+    models_score_dict = f.read()
+    models_score_dict = ast.literal_eval(models_score_dict)
+    f.close()
+
+    current_best_score = models_score_dict[key_name]
+
+    if previous_best_score < current_best_score:
+        with open("pickle_files/" + file_name, 'wb') as handle:
+            pickle.dump(reg, handle, pickle.HIGHEST_PROTOCOL)
 
 def create_models(station_array,df_db, features):
     days =["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
@@ -140,15 +165,23 @@ def start_modelling():
     df_db = df_db.drop('main_weather', axis = 1)
 
     # define the name of the directory to be created
-    path = "pickle_files"
+    path_pickle = "pickle_files"
 
-    if os.path.exists(path) == False:
+    if os.path.exists(path_pickle) == False:
         try:
-            os.mkdir(path)
+            os.mkdir(path_pickle)
         except OSError:
-            print ("Creation of the directory %s failed" % path)
+            print ("Creation of the directory %s failed" % path_pickle)
         else:
-            print ("Successfully created the directory %s " % path)
+            print ("Successfully created the directory %s " % path_pickle)
+
+    path_pickle_file = 'pickle_files/models_score_dict.txt'
+
+    if not os.path.isfile(path_pickle_file):
+        dict = {}
+        f = open(path_pickle_file, "w")
+        f.write(str(dict))
+        f.close()
 
     # Make all the models
     create_models(station_array,df_db,features)
