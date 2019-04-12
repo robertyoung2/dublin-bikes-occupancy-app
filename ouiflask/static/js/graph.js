@@ -23,6 +23,7 @@ function AjaxCommunicationForBikeGraph(stationID){
 }
 
 function drawChartJS(station_data) {
+    resize()
     // remove the canvas this way we can switch from the weekly to daily graph without artifact 
     $('#chart_0').remove(); 
     $('#chartContainerInner').append('<canvas id="chart_0"><canvas>'); // make a new canvas
@@ -38,6 +39,8 @@ function drawChartJS(station_data) {
     // get the canvas and make the graph
     var canvas = document.getElementById('chart_0');
     var ctx = canvas.getContext('2d');
+    ctx.canvas.width = $('#chartContainerOuter').width(); // resize to parent width
+    ctx.canvas.height = $('#chartContainerOuter').height(); // resize to parent height
     var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -93,6 +96,8 @@ function dayChart(station_data, idx) {
     // get the canvas and draw the graph
     var canvas = document.getElementById('chart_0');
     var ctx = canvas.getContext('2d');
+    ctx.canvas.width = $('#chartContainerOuter').width(); // resize to parent width
+    ctx.canvas.height = $('#chartContainerOuter').height();
     new Chart(ctx, {
     type: 'bar',
     data: {
@@ -124,4 +129,10 @@ function dayChart(station_data, idx) {
         drawChartJS(station_data)
     }
 
+}
+
+function resize (){
+    // document.getElementById('mapContainer').style.minHeight = "";
+    // document.getElementById("chartContainerOuter").style.height = "70%";
+    document.getElementById("chartContainerOuter").style.width = "50%";
 }
