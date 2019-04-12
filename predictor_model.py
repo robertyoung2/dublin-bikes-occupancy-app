@@ -1,7 +1,5 @@
-# Library Imports.
-import pandas as pd
 
-from patsy import dmatrices
+import pandas as pd
 from sqlalchemy import create_engine
 from sklearn.model_selection import TimeSeriesSplit
 from sklearn.metrics import r2_score
@@ -23,6 +21,12 @@ engine = create_engine("mysql+pymysql://{}:{}@{}:{}/{}".format(USER, PASSWORD, U
 
 
 def sql_query_model():
+    """
+    Function to get the latest information from the Dublin Bikes and Weather database and then
+    merge the two together, with sampling/averaging for the weather.
+    :return: a dataframe which is the combined DB and Weather database
+    """
+
     conn = engine.connect()
 
     sql1 = """SELECT number, date_format(CAST(last_update AS DATETIME), '%%Y-%%m-%%d %%H' ) as myDate, AVG(available_bike_stands) as available_bike_stands, AVG(available_bikes) as available_bikes
@@ -59,15 +63,30 @@ def sql_query_model():
 
 
 def performance_metric(y_true, y_predict):
-    """ Calculates and returns the performance score between
-        true and predicted values based on the metric chosen. """
+    """Calculates and returns the performance score between
+    true and predicted values based on the metric chosen.
 
+    :param y_true: y true value
+    :param y_predict: y predicted value
+    :return: score
+    """
     score = r2_score(y_true, y_predict)
-    # Return the score
+
     return score
 
 
 def fit_model(X, y,models_score_dict, key_name):
+    """ Fits the model using a decision tree regressor. Grid search is implemented for
+    hyper parameter tuning and best model selection. Time series is used for cross validation. The split is made on 20
+    as there are 20 hours per day (hours 01:00, 02:00, 03:00 and 04:00 are not included. Returns the
+    best estimator parameters for use in creating the pickle file and updating the best score dict.
+
+    :param X: Dataframe of predictors
+    :param y: Dataframe of target values
+    :param models_score_dict: Dictionary which records all models best score
+    :param key_name: Model name for dict loop up, eg 'model_114_Thursday'
+    :return: returns the best model estimator parameters
+    """
     n_splits = int(len(X) / 20)
 
     cv_sets = TimeSeriesSplit(n_splits)
@@ -89,14 +108,23 @@ def fit_model(X, y,models_score_dict, key_name):
         f = open('pickle_files/models_score_dict.txt', "w")
         f.write(str(models_score_dict))
         f.close()
-        # Return the optimal model after fitting the data
         return grid.best_estimator_
 
-    # Return the optimal model after fitting the data
     return grid.best_estimator_
 
 
 def station_day_model(station_number, day_week, df_current, features):
+    """ Function that creates a data frame for the given week day and station number. Ensures Whole days
+    only are included in the data frame. Creates the file name for the pickle model. Checks the previous
+    model best score versus the current model best score. If higher, updates the pickel model.
+
+    :param station_number: current station number
+    :param day_week: current day of the week
+    :param df_current: data frame for model work
+    :param features: list of features to be used for model
+    :return: Void. Updates pickle models.
+    """
+
     df_current = df_current[df_current['weekday'] == day_week]
     df_current = df_current[df_current['number'] == station_number]
 
@@ -139,13 +167,30 @@ def station_day_model(station_number, day_week, df_current, features):
         with open("pickle_files/" + file_name, 'wb') as handle:
             pickle.dump(reg, handle, pickle.HIGHEST_PROTOCOL)
 
+
 def create_models(station_array,df_db, features):
+    """
+    Loops through each station number and day of the week for model creation.
+    :param station_array: list of all valid station numbers
+    :param df_db: dataframe of all database data to be manipulated
+    :param features: features to be used for model training
+    :return: Void. Updates pickle models.
+    """
     days =["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
     for station_number in station_array:
         for day_week in days:
             station_day_model(station_number, day_week, df_db,features)
 
+
 def start_modelling():
+    """
+    Initial function. First calls SQL query to generate the dataframe from the databases. Creates a list
+    with each unique station number. Converts all the categorical weather features to binary features for
+    the purpose of modelling. Creates a df filtered by the desired features to be used for modelling.
+    Makes a directory for the pickle files if it does not exist. Creates the mode best score dictionary if it does
+    not exist. Calls the function to start the modelling process.
+    :return:
+    """
 
     # Download latest sql info
     df_db = sql_query_model()
@@ -154,7 +199,7 @@ def start_modelling():
     station_array = sorted(df_db.number.unique())
 
     # Make categorical info into binary
-    main_weather_dummies = pd.get_dummies(df_db['main_weather'], prefix="main_weather",drop_first = True)
+    main_weather_dummies = pd.get_dummies(df_db['main_weather'], prefix="main_weather", drop_first=True)
 
     categ_features = main_weather_dummies.columns.values.tolist()
     cont_features = ['hour', 'rainfall_mm', 'main_temp']
@@ -162,12 +207,12 @@ def start_modelling():
     features = cont_features + categ_features
 
     df_db = pd.concat([df_db, main_weather_dummies], axis=1)
-    df_db = df_db.drop('main_weather', axis = 1)
+    df_db = df_db.drop('main_weather', axis=1)
 
     # define the name of the directory to be created
     path_pickle = "pickle_files"
 
-    if os.path.exists(path_pickle) == False:
+    if not os.path.exists(path_pickle):
         try:
             os.mkdir(path_pickle)
         except OSError:
@@ -184,6 +229,7 @@ def start_modelling():
         f.close()
 
     # Make all the models
-    create_models(station_array,df_db,features)
+    create_models(station_array, df_db, features)
+
 
 start_modelling()
