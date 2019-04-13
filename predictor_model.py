@@ -52,9 +52,11 @@ def sql_query_model():
         if df3.loc[index, 'myDate'].hour == 0:
             df3.loc[index, 'myDate'] = df3.loc[index, 'myDate'] - datetime.timedelta(
                 minutes=(df3.loc[index, 'myDate'].minute + 1))
+            df3.loc[index, 'hour'] = 24
+        else:
+            df3.loc[index, 'hour'] = (df3.loc[index, 'myDate'].hour)
 
     df3['weekday'] = df3['myDate'].dt.day_name()
-    df3['hour'] = (df3['myDate'].dt.hour)
 
     df3.set_index('myDate', inplace=True)
 
