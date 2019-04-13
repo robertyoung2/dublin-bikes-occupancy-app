@@ -1,5 +1,6 @@
 from flask import render_template, request, flash, jsonify, make_response
 from ouiflask import app, SQLAlchemyConnection
+import pickle
 
 
 #Allows access to home.html through the browser by typing either /home or nothing at the end of url
@@ -42,3 +43,4 @@ def getWeather():
     weather = SQLAlchemyConnection.todayWeather()
 
     return jsonify(weather)
+
