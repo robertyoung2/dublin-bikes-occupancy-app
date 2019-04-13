@@ -200,17 +200,18 @@ def start_modelling():
     # Make categorical info into binary
     main_weather_dummies = pd.get_dummies(df_db['main_weather'], prefix="main_weather", drop_first=True)
 
-    additional_main_weathers = ['Thunderstorm', 'Haze', 'Squall', 'Smoke', 'Dust', 'Tornado', 'Ash']
+    additional_main_weathers = ['main_weather_Thunderstorm', 'main_weather_Haze', 'main_weather_Squall',
+                                'main_weather_Smoke', 'main_weather_Dust', 'main_weather_Tornado',
+                                'main_weather_Ash']
 
     for weather_descriptor in additional_main_weathers:
-        if ('main_weather_' + weather_descriptor) not in df_db.columns:
-            df_db['main_weather_' + weather_descriptor] = 0
+        if (weather_descriptor) not in df_db.columns:
+            df_db[weather_descriptor] = 0
 
-    categ_features = main_weather_dummies.columns.values.tolist()
+    categ_features = main_weather_dummies.columns.values.tolist() + additional_main_weathers
     cont_features = ['hour', 'rainfall_mm', 'main_temp']
 
     features = cont_features + categ_features
-
     df_db = pd.concat([df_db, main_weather_dummies], axis=1)
     df_db = df_db.drop('main_weather', axis=1)
 
