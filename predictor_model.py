@@ -1,4 +1,3 @@
-
 import pandas as pd
 from sqlalchemy import create_engine
 from sklearn.model_selection import TimeSeriesSplit
@@ -200,6 +199,12 @@ def start_modelling():
 
     # Make categorical info into binary
     main_weather_dummies = pd.get_dummies(df_db['main_weather'], prefix="main_weather", drop_first=True)
+
+    additional_main_weathers = ['Thunderstorm', 'Haze', 'Squall', 'Smoke', 'Dust', 'Tornado', 'Ash']
+
+    for weather_descriptor in additional_main_weathers:
+        if ('main_weather_' + weather_descriptor) not in df_db.columns:
+            df_db['main_weather_' + weather_descriptor] = 0
 
     categ_features = main_weather_dummies.columns.values.tolist()
     cont_features = ['hour', 'rainfall_mm', 'main_temp']
