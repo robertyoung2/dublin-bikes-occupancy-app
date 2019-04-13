@@ -2,7 +2,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.sql import column, text
 from functools import lru_cache
 import pandas as pd
+import math
 from flask import jsonify
+import pickle
 
 
 USER=***REMOVED***
@@ -39,9 +41,9 @@ def staticQuery():
 def Convert(myTuple, myList):
     for add, lat, lng, number, available_bikes, available_bike_stands in myTuple:
         myList.append([add, lat, lng, number, available_bikes, available_bike_stands])
-    print()
-    print(myList)
-    print()
+    # print()
+    # print(myList)
+    # print()
     return myList
 
     
@@ -59,9 +61,9 @@ def todayWeather():
             column('main.temp')
         )
 
-    print("Before Query")
+    # print("Before Query")
     result = connection.execute(sql)
-    print("After Query")
+    # print("After Query")
 
     d=dict()
     for row in result:
@@ -126,51 +128,32 @@ def dynamicQuery(stationID):
 
 
 def get_station_occupancy_weekly_daily(station_id):
-    
-    conn = engine.connect()
-    station_id = str(station_id)
-    days = ['Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun']
-    
-    sql = "select * from station_status where number = " + station_id
-    df = pd.read_sql_query(sql, conn, params={" + station_id + ": station_id})
-    df['last_update_date'] = pd.to_datetime(df.last_update, unit='ns')
-    df.set_index('last_update_date', inplace=True)
-    df['weekday'] = df.index.weekday
+    days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    average_bikes_per_day = []
+    average_bikes_per_hour = []
 
-    mean_available_stands = df[['available_bike_stands','available_bikes', 'weekday']].groupby('weekday').mean()
-    avg_avail_stands = []
-    avg_avail_bikes = []
-    
-    i = 0
-    for index, row in mean_available_stands.iterrows():
-        avg_avail_stands.append([days[i], row["available_bike_stands"]])
-        avg_avail_bikes.append([days[i], row["available_bikes"]])
-        i += 1
+    for day in days:
+        hourly = []
+        with open('/Users/conor/Desktop/COMP30830_Group_Project/oui-team/ouiflask/pickle_files/' + 'model_' + str(station_id) + '_' + day + '.pkl', 'rb') as handle:
+            rob_model = pickle.load(handle)
 
-    
-    
-    hourlyDay = ["MonHourly","TueHourly","WedHourly","ThHourly","FrHourly","SatHourly","SunHourly"]
+        for i in range(24):
+            # Run scraper here for weather prediction and use robs dummy encoding to format (maybe do it outside look and loop through data, more efficient?)
+            result = math.ceil(rob_model.predict([[i, 0, 5, 1, 0, 0, 0, 0, 0]]))
+            hourly.append([i, result])
 
-    for i in range(0,7):
-        hourlyDay[i]=df[df['weekday']==i]
-        hourlyDay[i] = hourlyDay[i].resample('H').mean()
-        hourlyDay[i] = hourlyDay[i].dropna()
-        hourlyDay[i]['hour'] = hourlyDay[i].index.hour
-        
-        hourlyDay[i] = hourlyDay[i][['available_bikes','hour']].groupby('hour').mean()
-        hourlyDay[i]["Hour_notIndex"]= hourlyDay[i].index
-        
+        average_bikes_per_hour.append(hourly)
 
-    temp_hourly = []
-    print(hourlyDay[0])
-    for i in range(0,7):
-        Oneday =[]
-        for index, row in hourlyDay[i].iterrows():
-            Oneday.append([row["Hour_notIndex"] ,row['available_bikes']])
-        temp_hourly.append(Oneday)
-        
-    combined_list = [avg_avail_stands, avg_avail_bikes, temp_hourly]
-    conn.close()
+    dayIndex = 0
+    for day in average_bikes_per_hour:
+        average_bikes = 0
+        for hour in day:
+            average_bikes += hour[1]
+        average_bikes = round(average_bikes / len(day))
+        average_bikes_per_day.append(average_bikes)
+        dayIndex += 1
+
+    combined_list = [average_bikes_per_day, average_bikes_per_hour]
 
     return jsonify(combined_list)
 

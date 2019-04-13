@@ -9,7 +9,7 @@ function AjaxCommunicationForBikeGraph(stationID){
         url: $SCRIPT_ROOT + '/bikeGraph',
         dataType: "json",
 
-        // when the python function return (Ajax have a response of 200 succcess) we can do something with the data returned
+        // when the python function return (Ajax have a response of 200 success) we can do something with the data returned
         success: function(station) {
             // draw the weekly graph
             drawChartJS(station)
@@ -24,18 +24,18 @@ function AjaxCommunicationForBikeGraph(stationID){
 
 function drawChartJS(station_data) {
     resize()
+
     // remove the canvas this way we can switch from the weekly to daily graph without artifact 
     $('#chart_0').remove(); 
     $('#chartContainerInner').append('<canvas id="chart_0"><canvas>'); // make a new canvas
+
     // select the wanted data
-    var avgBikesData = station_data[1];
+    var avgBikesData = station_data[0];
+
     // labels for the graph
     var weekday = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    // data for the graph
-    var meanAvailableBikeWeakly = [];
-    for (let i = 0; i < avgBikesData.length; i++) {
-        meanAvailableBikeWeakly.push(avgBikesData[i][1]);
-    }
+
+
     // get the canvas and make the graph
     var canvas = document.getElementById('chart_0');
     var ctx = canvas.getContext('2d');
@@ -47,7 +47,7 @@ function drawChartJS(station_data) {
         labels: weekday,
         datasets: [{
             label: 'Available bikes weekly',
-            data: meanAvailableBikeWeakly,
+            data: avgBikesData,
             borderWidth: 1
         }]
     },
@@ -61,13 +61,17 @@ function drawChartJS(station_data) {
         }
     }
     });
+
     // when clicking on a bar make a new graph corresponding to the day
     canvas.onclick = function (evt){
+
         // select what bar is clicked
         var activePoints = myChart.getElementsAtEvent(evt);
+
         if (activePoints[0]) {
             // get the index 
             var idx = activePoints[0]['_index'];
+
             // call the function to draw the daily graph
             dayChart(station_data, idx)
         }
@@ -79,20 +83,29 @@ function dayChart(station_data, idx) {
     // remove the canvas this way we can switch from the weekly to daily graph without artifact 
     $('#chart_0').remove(); 
     $('#chartContainerInner').append('<canvas id="chart_0"><canvas>'); // make a new canvas
+
     // used later to select the title of the graph
     var weekday = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
     // label of the graph
     var timeHour = ['Midnight'];
-    for (let index = 5; index < station_data[2][idx].length; index++) {
+    for (let index = 5; index < station_data[1][idx].length; index++) {
         timeHour.push(index+":00");
     }
     // station_data[2] contain all the hourly data for each day [idx] select the wanted day 0 monday 1 tuesday...
-    var avgBikesData = station_data[2][idx];
+    var avgBikesData = station_data[1][idx];
+
+    console.log("day index: ",idx);
+    console.log("Station Data: " + station_data[1]);
+
+
     // make a simple array with all the data needed to make the graph
     var meanAvailableHourly = [];
+
     for (let i = 0; i < avgBikesData.length; i++) {
         meanAvailableHourly.push(avgBikesData[i][1]);
     }
+
     // get the canvas and draw the graph
     var canvas = document.getElementById('chart_0');
     var ctx = canvas.getContext('2d');
@@ -101,6 +114,7 @@ function dayChart(station_data, idx) {
     new Chart(ctx, {
     type: 'bar',
     data: {
+
         labels: timeHour,
         datasets: [{
             label: weekday[idx],
