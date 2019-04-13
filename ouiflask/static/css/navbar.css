@@ -1,0 +1,85 @@
+/* START Navbar Flex-box Layout*/
+nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#navLeft{
+    min-width: 400px;
+    margin: 0px;
+}
+
+#navCentre {
+    margin: 0px;
+}
+
+#navRight{
+    min-width: 400px;
+    margin: 0px;
+}
+/* END Navbar Flex-box Layout*/
+
+
+/* START Page Title & Dropdown Section*/
+#pageTitle{
+    color: whitesmoke;
+    margin: 0;
+    padding: 0;
+}
+
+#dropdown{
+    margin: 0;
+    padding: 0;
+}
+/* END Page Title & Dropdown Section*/
+
+
+
+
+/* START Dublin Bikes Logo*/
+#logo{
+    height: 75px;
+    padding: 0;
+}
+/* END Dublin Bikes Logo*/
+
+
+
+/* START Weather Section*/
+.weatherContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: -20px;
+    margin: -20px;
+}
+
+#weatherIcon{
+    height: 75px;
+    margin: 10px;
+    padding: 0;
+    margin-bottom: -5px;
+    margin-top: -5px;
+}
+
+#weatherDescription{
+    border: 200px;
+    color: whitesmoke;
+    margin: 10px;
+    padding: 0;
+    font-size: 20px;
+    margin-bottom: -40px;
+}
+
+#weatherTemp{
+    color:whitesmoke;
+    margin-left: 10px;
+    margin-right: 40px;
+    padding: 0;
+    font-size: 50px;
+    margin-bottom: -30px;
+    margin-top: -30px;
+}
+/* END Weather Section*/

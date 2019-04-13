@@ -5,42 +5,42 @@
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
     
-    <!-- Static CSS -->
-    <!--<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">-->
-    
     <!-- Jquery -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    
+
+    <!-- chartJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+
+    <!-- heatmap -->
+    <script src="/static/js/heatmap.js"></script>
+
     <!-- define the root of the page for ajax request -->
     <script type=text/javascript>
         $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     </script>
-    
+
     <style>
-        <span class="metadata-marker" style="display: none;" data-region_tag="css"></span>      /* Always set the map height explicitly to define the size of the div
-        * element that contains the map. */
-        #map {
-            height: 100%;
-        }
-        /* Optional: Makes the sample page fill the window. */
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
+        <span class="metadata-marker" style="display: none;" data-region_tag="css"></span>      /* Always set the map height explicitly to define the size of the div */
     </style>
-    
+
     {% if title %}
-    <title>OuiBike - {{ title }}</title>
+        <title>OuiBike - {{ title }}</title>
     {% else %}
-    <title>OuiBike</title>
+        <title>OuiBike</title>
     {% endif %}
-    
-    
+
+    <!-- Static CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/infowindow.css') }}">
+
 </head>
 <body>
     <div>
         {% block content %}{% endblock %}
     </div>
+
+    <!--Note the "=initMap" at the end of this URL, this calls the initMap() function on page load-->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3jfCg18B1ksPENyBJTzmkM78Uva1XiKw&callback=initMap"></script>
 </body>
 </html>
