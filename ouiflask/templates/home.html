@@ -32,8 +32,8 @@
             <img id="weatherThermometer" class="svg">
             <h2 id="weatherTemp"></h2>
         </div>
-    </nav>
 
+    </nav>
 
 
     <!-- map container -->
@@ -55,19 +55,93 @@
 <!-- get the weather from back end -->
 <script src="static/js/getWeather.js"></script>
 
+<!-- get user location -->
+<script>
+
+
+
+
+</script>
+
 <!-- javascript for creating the map -->
     <script type="text/javascript">
 
         getWeather()
 
         var dict = {};
-        var map;
+        var map, infoWindow;
         var userZoomed = false;
         var zoomListener;
+        var dublin = {lat: 53.349013, lng: -6.260311};
 
         //important to declare infowindow here so it can be accessed by both dop() and addMarkerWithTimeout() functions
         var infowindow = null;
 
+        function MyLocation(controlDiv, map) {
+
+            // Set CSS for the control border.
+            var controlUI = document.createElement('div');
+            controlUI.style.backgroundColor = '#fff';
+            controlUI.style.border = '2px solid #fff';
+            controlUI.style.borderRadius = '3px';
+            controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+            controlUI.style.cursor = 'pointer';
+            controlUI.style.textAlign = 'center';
+            controlUI.title = 'Click to get user location';
+            controlDiv.appendChild(controlUI);
+
+            // Set CSS for the control interior.
+            var controlText = document.createElement('div');
+            controlText.style.color = 'rgb(25,25,25)';
+            controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+            controlText.style.fontSize = '16px';
+            controlText.style.lineHeight = '38px';
+            controlText.style.paddingLeft = '6px';
+            controlText.style.paddingRight = '6px';
+            controlUI.style.marginBottom = '0px';
+            controlUI.style.marginTop = '10px';
+            controlText.innerHTML = 'My Location';
+            controlUI.appendChild(controlText);
+
+            // Setup the click event listeners: simply set the map to Chicago.
+            controlUI.addEventListener('click', function() {
+                getLocation()
+        });
+
+      }
+
+        function CenterControl(controlDiv, map) {
+
+            // Set CSS for the control border.
+            var controlUI = document.createElement('div');
+            controlUI.style.backgroundColor = '#fff';
+            controlUI.style.border = '2px solid #fff';
+            controlUI.style.borderRadius = '3px';
+            controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+            controlUI.style.cursor = 'pointer';
+            controlUI.style.marginTop = '10px';
+            controlUI.style.textAlign = 'center';
+            controlUI.title = 'Click to recenter the map';
+            controlDiv.appendChild(controlUI);
+
+            // Set CSS for the control interior.
+            var controlText = document.createElement('div');
+            controlText.style.color = 'rgb(25,25,25)';
+            controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+            controlText.style.fontSize = '16px';
+            controlText.style.lineHeight = '38px';
+            controlText.style.paddingLeft = '6px';
+            controlText.style.paddingRight = '6px';
+            controlText.innerHTML = 'Centre Map';
+            controlUI.appendChild(controlText);
+
+            // Setup the click event listeners: simply set the map to Chicago.
+            controlUI.addEventListener('click', function() {
+                map.setCenter(dublin);
+                map.setZoom(13);
+        });
+
+      }
 
         function initMap() {
             /*
@@ -111,14 +185,31 @@
                 zoom: outer_zoom //starting zoom level
             });
 
-            zoomListener = map.addListener('zoom_changed', function() {
+            zoomListener = map.addListener('zoom_changed', function () {
                 // infowindow.setContent('Zoom: ' + map.getZoom());
                 userZoomed = true;
                 console.log("userZoomed");
             });
 
+            infoWindow = new google.maps.InfoWindow;
+
+            // Create the DIV to hold the control and call the CenterControl()
+            // constructor passing in this DIV.
+            var centerControlDiv = document.createElement('div');
+            var centerControl = new CenterControl(centerControlDiv, map);
+
+            centerControlDiv.index = 1;
+            map.controls[google.maps.ControlPosition.TOP_RIGHT].push(centerControlDiv);
+
+            var centerControlDiv = document.createElement('div');
+            var centerControl = new MyLocation(centerControlDiv, map);
+
+            centerControlDiv.index = 2;
+            map.controls[google.maps.ControlPosition.TOP_RIGHT].push(centerControlDiv);
+
             //once map object has been made, create markers. Markers are dependant on map so map must be created first
             createMarkers();
+
         }
 
         // google.maps.event.addDomListener(window, 'load', initialize);
@@ -127,6 +218,29 @@
         //  google.maps.event.trigger(map, "resize");
         //  map.setCenter(center);
         // });
+
+        // Gets the users location
+        function getLocation() {
+            {#var x = document.getElementById("demo");#}
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            }
+        }
+
+        // Using the users Geolocation, pans the map to these co-ords
+        function showPosition(position) {
+
+
+            var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
+                map: map,
+                title: 'Hello World!',
+
+
+
+        });
+            map.panTo(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+        }
 
         function createMarkers() {
             /*
@@ -253,6 +367,8 @@
     // draws it.
     var chartVisible = false;
     </script> -->
+
+
 </div>
 {% endblock content %}
             
