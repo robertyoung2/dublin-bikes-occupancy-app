@@ -3,9 +3,7 @@
 <div id="flexContainer">
     <!--        Navigation Bar -->
     <nav>
-        <div id="navLeft">
-            <h1 class="inner" id="pageTitle">Oui Flask</h1>
-
+        <div id="navLeft">            
             <!-- Create a drop down menu where the user can select a station -->
             <div id="dropdown">
                 <!-- On change will call the function takeStationID  -->
@@ -79,10 +77,38 @@
             Calls function to create markers
             */
 
+            console.log($(window).width());
+            console.log($(window).height());
+
+            var window_width = $(window).width();
+            var window_height = $(window).height();
+            if ((window_width<=320) && (window_height<=568)) {
+                var outer_zoom = 11.8;
+            }
+            else if (window_width<=375){
+                var outer_zoom = 12.2;
+            }
+            else if (window_width<=414){
+                var outer_zoom = 12.3;
+            }
+            else if (window_width<=801){
+                var outer_zoom = 13;
+            }
+            else if (window_width<=2000){
+                var outer_zoom = 13.3;
+            }
+            else if (window_width<=3840){
+                var outer_zoom = 16;
+            }
+            else{
+                var outer_zoom = 17;
+            }
+
+
             //create map object
             map = new google.maps.Map(document.getElementById('map'), {
                 center: new google.maps.LatLng(53.349013,-6.260311), //starting location
-                zoom: 13 //starting zoom level
+                zoom: outer_zoom //starting zoom level
             });
 
             zoomListener = map.addListener('zoom_changed', function() {
@@ -94,6 +120,13 @@
             //once map object has been made, create markers. Markers are dependant on map so map must be created first
             createMarkers();
         }
+
+        // google.maps.event.addDomListener(window, 'load', initialize);
+        // google.maps.event.addDomListener(window, "resize", function() {
+        //  var center = map.getCenter();
+        //  google.maps.event.trigger(map, "resize");
+        //  map.setCenter(center);
+        // });
 
         function createMarkers() {
             /*
