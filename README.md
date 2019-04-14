@@ -1,6 +1,6 @@
 # READ ME
 
-### Package Information
+## Package Information
 
 Below is a list of the required packages to run in the virtual environment. 
 This is a working list, as each team member finds a new package required, add to the list
@@ -29,7 +29,21 @@ Optional:
 
 Current venv: ouiteam_v2.
 
-### Predictor Model Inputs
+## Starting and Stopping Flask App on EC2
+
+Flask app is run using a combination of Nginx and Gunicorn. The IP for our web app is [18.220.169.53](http://18.220.169.53).
+
+Gunicorn is the server the runs the application. Nginx is used as the reverse-proxy server.
+
+To start the flask app running, and to keep it running on our IP address, the process call on the EC2 instance is:
+* gunicorn run:app
+
+To stop gunicorn running, the command is:
+* pkill gunicorn
+
+See a quick overview of the implementation [here](https://chrisdtran.com/2017/deploy-flask-on-ec2/).
+
+## Predictor Model Inputs
 
 The predictor model, loaded as a pickle file requires a total of 16 inputs.
 
