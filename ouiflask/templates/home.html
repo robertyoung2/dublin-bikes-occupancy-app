@@ -89,9 +89,8 @@
             controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
             controlUI.style.cursor = 'pointer';
             controlUI.style.textAlign = 'center';
-            controlUI.title = 'Click to recenter the map';
+            controlUI.title = 'Click to get user location';
             controlDiv.appendChild(controlUI);
-
 
             // Set CSS for the control interior.
             var controlText = document.createElement('div');
@@ -102,6 +101,7 @@
             controlText.style.paddingLeft = '6px';
             controlText.style.paddingRight = '6px';
             controlUI.style.marginBottom = '0px';
+            controlUI.style.marginTop = '10px';
             controlText.innerHTML = 'My Location';
             controlUI.appendChild(controlText);
 
@@ -121,11 +121,10 @@
             controlUI.style.borderRadius = '3px';
             controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
             controlUI.style.cursor = 'pointer';
-            controlUI.style.marginBottom = '22px';
+            controlUI.style.marginTop = '10px';
             controlUI.style.textAlign = 'center';
             controlUI.title = 'Click to recenter the map';
             controlDiv.appendChild(controlUI);
-
 
             // Set CSS for the control interior.
             var controlText = document.createElement('div');
@@ -166,6 +165,8 @@
                 console.log("userZoomed");
             });
 
+            infoWindow = new google.maps.InfoWindow;
+
             // Create the DIV to hold the control and call the CenterControl()
             // constructor passing in this DIV.
             var centerControlDiv = document.createElement('div');
@@ -190,14 +191,23 @@
             {#var x = document.getElementById("demo");#}
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(showPosition);
-            } else {
-                x.innerHTML = "Geolocation is not supported by this browser.";
             }
         }
 
         // Using the users Geolocation, pans the map to these co-ords
         function showPosition(position) {
-            var x = document.getElementById("demo");
+
+            var image = "https://cdn.shopify.com/s/files/1/1061/1924/products/Poop_Emoji_7b204f05-eec6-4496-91b1-351acc03d2c7_large.png?v=1480481059";
+
+
+            var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
+                map: map,
+                title: 'Hello World!',
+                {#icon: image,#}
+
+
+        });
             map.panTo(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
         }
 
