@@ -36,6 +36,7 @@ def staticQuery():
     myTuple = result
     myList = []
     result = Convert(myTuple, myList)
+    print("results:", result)
 
     return result
 

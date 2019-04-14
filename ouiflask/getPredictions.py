@@ -23,7 +23,8 @@ def choose_nearest_datetime(datetime_options, selected_datetime):
     return min(datetime_options, key=lambda x: abs(x - selected_datetime))
 
 
-def predict(station_id):
+def predict(station_id, maxBikes):
+
     days = get_dates(5)
     print(days)
 
@@ -40,7 +41,7 @@ def predict(station_id):
     for day in days:
         hourly = []
 
-        with open('/home/ubuntu/oui-team/pickle_files/' + 'model_' + str(station_id) + '_' + day[1] + '.pkl', 'rb') as handle:
+        with open('/Users/conor/Desktop/COMP30830_Group_Project/oui-team/ouiflask/pickle_files/' + 'model_' + str(station_id) + '_' + day[1] + '.pkl', 'rb') as handle:
             rob_model = pickle.load(handle)
 
         for pred_time in range(24):
@@ -63,6 +64,12 @@ def predict(station_id):
                                                    weather_prediction_df['main_weather_Dust'],
                                                    weather_prediction_df['main_weather_Tornado'],
                                                    weather_prediction_df['main_weather_Ash']]]))
+
+            if result < 0:
+                result = 0
+            elif result > maxBikes:
+                result = maxBikes
+
             hourly.append([pred_date, result])
 
         average_bikes_per_hour.append(hourly)

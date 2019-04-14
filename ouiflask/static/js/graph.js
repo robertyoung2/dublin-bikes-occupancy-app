@@ -1,16 +1,18 @@
 // function that pass the stationID to the back end and do something with the response
-function AjaxCommunicationForBikeGraph(stationID){
+function AjaxCommunicationForBikeGraph(stationID, maxBikes){
+
     // AjAX call
     $.ajax({
         type: "POST",
         // put stationID in the post call so the back end can have access to the stationID
-        data:{stationID: stationID},
+        data:{stationID: stationID, maxBikes: maxBikes},
         // will use the function bikeGraph() in the routes.py file
         url: $SCRIPT_ROOT + '/bikeGraph',
         dataType: "json",
 
         // when the python function return (Ajax have a response of 200 success) we can do something with the data returned
         success: function(station) {
+            console.log(station);
             // draw the weekly graph
             drawChartJS(station)
 
