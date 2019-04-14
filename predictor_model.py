@@ -201,22 +201,26 @@ def start_modelling():
     station_array = sorted(df_db.number.unique())
 
     # Make categorical info into binary
-    main_weather_dummies = pd.get_dummies(df_db['main_weather'], prefix="main_weather", drop_first=True)
+    main_weather_dummies = pd.get_dummies(df_db['main_weather'], prefix="main_weather")
 
     additional_main_weathers = ['main_weather_Thunderstorm', 'main_weather_Haze', 'main_weather_Squall',
                                 'main_weather_Smoke', 'main_weather_Dust', 'main_weather_Tornado',
                                 'main_weather_Ash']
 
-    for weather_descriptor in additional_main_weathers:
-        if (weather_descriptor) not in df_db.columns:
-            df_db[weather_descriptor] = 0
-
-    categ_features = main_weather_dummies.columns.values.tolist() + additional_main_weathers
+    # This is ensuring that the order in which the model was originally trained is preserved
+    # This is to allow for the reordering of data frame columns in the for loop below as new weather descriptions are
+    # added to the database history
+    categ_features = ['main_weather_Clouds', 'main_weather_Clear', 'main_weather_Rain', 'main_weather_Fog',
+                      'main_weather_Drizzle', 'main_weather_Mist', 'main_weather_Snow'] + additional_main_weathers
     cont_features = ['hour', 'rainfall_mm', 'main_temp']
 
     features = cont_features + categ_features
     df_db = pd.concat([df_db, main_weather_dummies], axis=1)
     df_db = df_db.drop('main_weather', axis=1)
+
+    for weather_descriptor in additional_main_weathers:
+        if (weather_descriptor) not in df_db.columns:
+            df_db[weather_descriptor] = 0
 
     # define the name of the directory to be created
     path_pickle = "pickle_files"
