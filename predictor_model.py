@@ -107,7 +107,7 @@ def fit_model(X, y,models_score_dict, key_name):
 
     if key_name not in models_score_dict or models_score_dict[key_name] < best_score:
         models_score_dict[key_name] = best_score
-        f = open('pickle_files/models_score_dict.txt', "w")
+        f = open('/home/ubuntu/oui-team/pickle_files/models_score_dict.txt', "w")
         f.write(str(models_score_dict))
         f.close()
         return grid.best_estimator_
@@ -146,7 +146,7 @@ def station_day_model(station_number, day_week, df_current, features):
     file_name = "model_" + str(station_number) + "_" + day_week + ".pkl"
     key_name = file_name[:-4]
 
-    f = open('pickle_files/models_score_dict.txt', "r")
+    f = open('/home/ubuntu/oui-team/pickle_files/models_score_dict.txt', "r")
     models_score_dict = f.read()
     models_score_dict = ast.literal_eval(models_score_dict)
     f.close()
@@ -158,7 +158,7 @@ def station_day_model(station_number, day_week, df_current, features):
 
     reg = fit_model(X, y, models_score_dict, key_name)
 
-    f = open('pickle_files/models_score_dict.txt', "r")
+    f = open('/home/ubuntu/oui-team/pickle_files/models_score_dict.txt', "r")
     models_score_dict = f.read()
     models_score_dict = ast.literal_eval(models_score_dict)
     f.close()
@@ -166,7 +166,7 @@ def station_day_model(station_number, day_week, df_current, features):
     current_best_score = models_score_dict[key_name]
 
     if previous_best_score < current_best_score:
-        with open("pickle_files/" + file_name, 'wb') as handle:
+        with open('/home/ubuntu/oui-team/pickle_files/' + file_name, 'wb') as handle:
             pickle.dump(reg, handle, pickle.HIGHEST_PROTOCOL)
 
 
@@ -233,7 +233,7 @@ def start_modelling():
         else:
             print ("Successfully created the directory %s " % path_pickle)
 
-    path_pickle_file = 'pickle_files/models_score_dict.txt'
+    path_pickle_file = '/home/ubuntu/oui-team/pickle_files/models_score_dict.txt'
 
     if not os.path.isfile(path_pickle_file):
         dict = {}
