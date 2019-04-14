@@ -94,9 +94,9 @@ function dayChart(station_data, idx) {
     }
     // station_data[2] contain all the hourly data for each day [idx] select the wanted day 0 monday 1 tuesday...
     var avgBikesData = station_data[1][idx];
-
-    console.log("day index: ",idx);
-    console.log("Station Data: " + station_data[1]);
+    //
+    // console.log("day index: ",idx);
+    // console.log("Station Data: " + station_data[1]);
 
 
     // make a simple array with all the data needed to make the graph
