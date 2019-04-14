@@ -261,18 +261,14 @@
 
             // a counter for the loop below to assist with calculating timeout value for staggering drop animation
             var i = 0;
-            var name = "";
-            var number = 0;
-            var avBikes = 0;
-            var avStands = 0;
-            var maxBikes = 0;
-
 
             //Loop through results (SQL query nested list), each row is a different station with all it's values
             {% for row in results: %}
             //What's being assigned here is the values from "address" column in DB as the actual "name"
             // column values are all upper case
             name = '{{row[0]}}';
+            nameString = String("{{row[0]}}").replace(/&#39;/g,"\\'");
+            console.log(nameString);
             number = parseInt('{{ row[3] }}', 10);
 
             var image = generate_heatmap({{row[4]}}, {{row[5]}});
@@ -289,7 +285,7 @@
               <tr id="queryData{{ row[3] }}">
               </tr>
               <tr>
-                <td id="moreInfo" colspan="2"><button onclick="AjaxCommunicationForBikeGraph({{ row[3] }}, (parseInt('{{row[4]}}', 10) + parseInt('{{row[5]}}', 10)));">More Info</button></td>
+                <td id="moreInfo" colspan="2"><button onclick="AjaxCommunicationForBikeGraph({{ row[3] }}, (parseInt('{{row[4]}}', 10) + parseInt('{{row[5]}}', 10)), '`+nameString+`');">More Info</button></td>
               </tr>
             </table>`;
 

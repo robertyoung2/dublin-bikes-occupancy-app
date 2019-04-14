@@ -1,11 +1,11 @@
 // function that pass the stationID to the back end and do something with the response
-function AjaxCommunicationForBikeGraph(stationID, maxBikes){
+function AjaxCommunicationForBikeGraph(stationID, maxBikes, name){
 
     // AjAX call
     $.ajax({
         type: "POST",
         // put stationID in the post call so the back end can have access to the stationID
-        data:{stationID: stationID, maxBikes: maxBikes},
+        data:{stationID: stationID, maxBikes: maxBikes, station_name: name},
         // will use the function bikeGraph() in the routes.py file
         url: $SCRIPT_ROOT + '/bikeGraph',
         dataType: "json",
@@ -35,7 +35,7 @@ function drawChartJS(station_data) {
     var avgBikesData = station_data[0];
 
     // labels for the graph
-    var weekday = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    var weekday = station_data[2];
 
 
     // get the canvas and make the graph
@@ -48,16 +48,30 @@ function drawChartJS(station_data) {
     data: {
         labels: weekday,
         datasets: [{
-            label: 'Available bikes weekly',
+            label: station_data[3] + ' - Average Available Bikes - Weekly',
             data: avgBikesData,
+            backgroundColor: '#1F414F',
+            // hoverBackgroundColor: "yellow",
+            hoverBorderColor: "yellow",
             borderWidth: 1
         }]
     },
     options: {
+        legend: {
+            labels: {
+                fontColor: "1F414F",
+            }
+        },
         scales: {
             yAxes: [{
                 ticks: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    fontColor:'#1F414F'
+                }
+            }],
+            xAxes: [{
+                ticks: {
+                    fontColor:'#1F414F'
                 }
             }]
         }
@@ -69,6 +83,8 @@ function drawChartJS(station_data) {
 
         // select what bar is clicked
         var activePoints = myChart.getElementsAtEvent(evt);
+        console.log("Active Points");
+        console.log(activePoints);
 
         if (activePoints[0]) {
             // get the index 
@@ -87,13 +103,17 @@ function dayChart(station_data, idx) {
     $('#chartContainerInner').append('<canvas id="chart_0"><canvas>'); // make a new canvas
 
     // used later to select the title of the graph
-    var weekday = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    var weekday = station_data[2];
 
     // label of the graph
-    var timeHour = ['Midnight'];
+    var timeHour = [];
+
+    console.log(station_data[1]);
     for (let index = 5; index < station_data[1][idx].length; index++) {
         timeHour.push(index+":00");
     }
+    timeHour.push('Midnight');
+    console.log(timeHour);
     // station_data[2] contain all the hourly data for each day [idx] select the wanted day 0 monday 1 tuesday...
     var avgBikesData = station_data[1][idx];
     //
@@ -114,31 +134,42 @@ function dayChart(station_data, idx) {
     ctx.canvas.width = $('#chartContainerOuter').width(); // resize to parent width
     ctx.canvas.height = $('#chartContainerOuter').height();
     new Chart(ctx, {
-    type: 'bar',
-    data: {
+        type: 'bar',
+        data: {
 
-        labels: timeHour,
-        datasets: [{
-            label: weekday[idx],
-            data: meanAvailableHourly,
-            backgroundColor: [
-                'rgba(255, 99, 132, 1)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                }
+            labels: timeHour,
+            datasets: [{
+                label: station_data[3] + ' - Predicted Available Bikes - ' + weekday[idx],
+                data: meanAvailableHourly,
+                backgroundColor: '#1F414F',
+                // hoverBackgroundColor: "yellow",
+                hoverBorderColor: "yellow",
+                // borderColor: [
+                //     'rgba(255, 99, 132, 1)'
+                // ],
+                borderWidth: 1
             }]
+        },
+        options: {
+            legend: {
+                labels: {
+                    fontColor: "1F414F",
+                }
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        fontColor:'#1F414F'
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontColor:'#1F414F'
+                    }
+                }]
+            }
         }
-    }
     });
     // when clicking anywhere on the graph we return to the weekly graph (we redraw it in fact)
     canvas.onclick = function (){

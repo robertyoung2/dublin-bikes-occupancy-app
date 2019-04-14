@@ -11,7 +11,7 @@ def get_dates(days_to_add):
     dates_array = []
 
     current_date = datetime.now().date()
-    print(current_date)
+    # print(current_date)
     for i in range(0, days_to_add + 1):
         dates_array.append([current_date, current_date.strftime("%A")])
         current_date = current_date + timedelta(days=1)
@@ -23,10 +23,10 @@ def choose_nearest_datetime(datetime_options, selected_datetime):
     return min(datetime_options, key=lambda x: abs(x - selected_datetime))
 
 
-def predict(station_id, maxBikes):
+def predict(station_id, maxBikes, name):
 
     days = get_dates(5)
-    print(days)
+    # print(days)
 
     average_bikes_per_day = []
     average_bikes_per_hour = []
@@ -35,12 +35,14 @@ def predict(station_id, maxBikes):
 
     items = []
 
+    predictedDays = []
+
     for forecast in df['list'][0]:
         items.append(pd.to_datetime(forecast["dt_txt"], unit='ns'))
 
     for day in days:
         hourly = []
-
+        predictedDays.append(day[1])
         with open('/Users/conor/Desktop/COMP30830_Group_Project/oui-team/ouiflask/pickle_files/' + 'model_' + str(station_id) + '_' + day[1] + '.pkl', 'rb') as handle:
             rob_model = pickle.load(handle)
 
@@ -83,7 +85,7 @@ def predict(station_id, maxBikes):
         average_bikes_per_day.append(average_bikes)
         dayIndex += 1
 
-    combined_list = [average_bikes_per_day, average_bikes_per_hour]
+    combined_list = [average_bikes_per_day, average_bikes_per_hour, predictedDays, name]
 
     return jsonify(combined_list)
 

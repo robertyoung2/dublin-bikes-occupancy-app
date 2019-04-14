@@ -32,8 +32,9 @@ def bikeGraph():
     # assign the value stationID from the ajax post
     stationID = request.form['stationID']
     maxBikes = int(request.form['maxBikes'])
+    name = request.form['station_name']
 
-    result = getPredictions.predict(stationID, maxBikes)
+    result = getPredictions.predict(stationID, maxBikes, name)
     # return a json object to the front end that can be used by jinja
 
     return result
