@@ -197,14 +197,12 @@
         // Using the users Geolocation, pans the map to these co-ords
         function showPosition(position) {
 
-            var image = "https://cdn.shopify.com/s/files/1/1061/1924/products/Poop_Emoji_7b204f05-eec6-4496-91b1-351acc03d2c7_large.png?v=1480481059";
-
 
             var marker = new google.maps.Marker({
                 position: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
                 map: map,
                 title: 'Hello World!',
-                {#icon: image,#}
+
 
 
         });
