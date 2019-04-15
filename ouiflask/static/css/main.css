@@ -2,7 +2,7 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    background-color: orange;
+
 }
 
 /*START Flexbox Properties*/
@@ -14,42 +14,24 @@ html, body {
     right: 0;
     overflow: auto;
     display: flex;
-    background: rgb(86, 119, 136);
+    background: #27535F;
     flex-direction: column;
-}
-
-
-nav{
-    background-color: rgb(45, 75, 85);
-    position: -webkit-sticky;
-    position: sticky;
-    top: 0;
-    z-index: 1;
-
-    padding: 10px;
-    flex: 0 0 auto;
 }
 
 #mapContainer{
     flex: 1 0;
     min-height: 400px;
-    background: blue;
 }
 
 #chartContainerOuter{
     /*flex: 0 0 auto;*/
     margin: 10px;
-
-    background: rgb(77, 120, 138);
+    background: #27535F;
 }
-/*END Flexbox Properties*/
-
-
 
 #map{
     height: 100%;
 }
-
 
 #chartContainerInner{
     /*display: inline-block;*/
@@ -65,7 +47,7 @@ nav{
     border-radius: 50px;
 }
 
-
 .svg{
-    height: 100px;
+    height: 75px;
 }
+

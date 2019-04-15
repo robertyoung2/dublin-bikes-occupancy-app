@@ -2,22 +2,28 @@
 {% block content %}
 <div id="flexContainer">
 
-<nav>
+
+
 <div class="grid-container">
-    <div class="grid-item"> <input class="autocomplete" type="text" list="stationsList" placeholder="Search Stations" id="stationSelector" onchange="takeStationID()">
+    <div class="grid_item1"> <input class="autocomplete" type="text" list="stationsList" placeholder="Search Stations" id="stationSelector" onchange="takeStationID()">
         <datalist id="stationsList">
             {% for row in results: %}
             <option value="{{row[0]}}" data-value="{{row[3]}}"></option>
             {% endfor %}
         </datalist></div>
-    <div class="grid-item"><img id="logo" src="static/images/dublin_bikes_2.png"></div>
-    <div class="grid-item" id="pageTitle">OuiBikes | Dublin Bikes</div>
-    <div class="grid-item"><img id="weatherIcon" class="svg"></div>
-    <div class="grid-item"><p id="weatherDescription"><p/></div>
-    <div class="grid-item"><img id="weatherThermometer" class="svg"></div>
-    <div class="grid-item"><p id="weatherTemp"><p/></div>
+    <div class="grid_item2"><img id="logo" src="static/images/dublin_bikes_2.png"></div>
+    <div class="grid_item3" id="pageTitle">OuiBikes | Dublin Bikes</div>
+    <div class="grid_item4"><img id="weatherIcon" class="svg"></div>
+    <div class="grid_item5"><p id="weatherDescription"><p/></div>
+    <div class="grid_item6"><img id="weatherThermometer" class="svg"></div>
+    <div class="grid_item7"><p id="weatherTemp"><p/></div>
+  <a href="javascript:void(0);" class="icon" onclick="myfuncfunc()">
+    <i class="fa fa-bars"></i>
+  </a>
+
 </div>
-</nav>
+
+
 
     <!-- map container -->
     <div id="mapContainer">
