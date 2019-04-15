@@ -25,6 +25,7 @@ function AjaxCommunicationForBikeGraph(stationID, maxBikes, name){
 }
 
 function drawChartJS(station_data) {
+    flashMessage('Click on a day for more prediction')
     resize()
 
     // remove the canvas this way we can switch from the weekly to daily graph without artifact 
@@ -102,7 +103,7 @@ function dayChart(station_data, idx) {
     // remove the canvas this way we can switch from the weekly to daily graph without artifact 
     $('#chart_0').remove(); 
     $('#chartContainerInner').append('<canvas id="chart_0"><canvas>'); // make a new canvas
-
+    flashMessage('Click on the chart to go back on the weekly graph')
     // used later to select the title of the graph
     var weekday = station_data[2];
 
