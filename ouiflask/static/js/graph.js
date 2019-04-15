@@ -43,6 +43,7 @@ function drawChartJS(station_data) {
     var ctx = canvas.getContext('2d');
     ctx.canvas.width = $('#chartContainerOuter').width(); // resize to parent width
     ctx.canvas.height = $('#chartContainerOuter').height(); // resize to parent height
+    Chart.defaults.global.defaultFontFamily = 'Roboto', "sans-serif";
     var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
