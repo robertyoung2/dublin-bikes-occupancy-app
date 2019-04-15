@@ -1,3 +1,6 @@
+/* CSS to be used for the nav bar */
+
+/*  Container structure for the grid elements */
 .grid-container {
     display: grid;
     grid-template-columns: 320px 200px 460px 80px auto 60px auto;
@@ -7,6 +10,7 @@
     margin-top: 1px;
 }
 
+/* Begin list CSS for grid elements 1 through 7 */
 .grid_item1 {
     grid-column: 1;
     font-size: 20px;
@@ -50,6 +54,8 @@
     text-align: center;
 }
 
+/* End CSS for individual grid elements */
+
 /* START Page Title & Dropdown Section*/
 #pageTitle {
     color: whitesmoke;
@@ -59,6 +65,7 @@
 
 }
 
+/* CSS for bike station dropdown */
 #dropdown {
     margin-left: 16px;
     font-family: 'Roboto', sans-serif;
@@ -66,7 +73,7 @@
     display: inline-flex;
 }
 
-/* Text area font CSS*/
+/* Text input area font CSS*/
 input {
     font-size: 16px;
     font-family: 'Roboto', sans-serif;
@@ -89,7 +96,7 @@ input {
 
 /* END Dublin Bikes Logo*/
 
-
+/* CSS for svg weather icon */
 #weatherIcon {
     height: 75px;
     margin: 0 0 0 0;
@@ -98,6 +105,7 @@ input {
 
 }
 
+/* CSS for text description of weather */
 #weatherDescription {
     color: whitesmoke;
     padding: 0;
@@ -106,10 +114,12 @@ input {
     float: left;
 }
 
+/* CSS for dynamic thermometer svg */
 #weatherThermometer {
     float: left;
 }
 
+/* CSS for text description of current temperature */
 #weatherTemp {
     color: whitesmoke;
     padding: 0;
@@ -120,15 +130,16 @@ input {
     font-weight: bold;
 }
 
+/* Responsive design for defined screen width*/
 @media only screen and (min-width : 176px) and (max-width: 730px) {
     .grid-container {
-    display: grid;
-    grid-template-columns: 100%;
-    background-color: #27535F;
-    align-items: center;
-    margin-bottom: 1px;
-    margin-top: 1px;
-}
+        display: grid;
+        grid-template-columns: 100%;
+        background-color: #27535F;
+        align-items: center;
+        margin-bottom: 1px;
+        margin-top: 1px;
+    }
 
     .grid_item1 {
         display: inline-block;
@@ -163,15 +174,16 @@ input {
     }
 }
 
+/* Responsive design for defined screen width*/
 @media only screen and (min-width : 730px) and (max-width: 900px) {
     .grid-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    background-color: #27535F;
-    align-items: center;
-    margin-bottom: 1px;
-    margin-top: 1px;
-}
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        background-color: #27535F;
+        align-items: center;
+        margin-bottom: 1px;
+        margin-top: 1px;
+    }
 
     .grid_item1 {
         display: inline-block;
@@ -206,16 +218,17 @@ input {
     }
 }
 
+/* Responsive design for defined screen width*/
 @media only screen and (min-width : 901px) and (max-width: 1099px) {
 
     .grid-container {
-    display: grid;
-    grid-template-columns: 1fr 120px 1fr;
-    background-color: #27535F;
-    align-items: center;
-    margin-bottom: 1px;
-    margin-top: 1px;
-}
+        display: grid;
+        grid-template-columns: 1fr 120px 1fr;
+        background-color: #27535F;
+        align-items: center;
+        margin-bottom: 1px;
+        margin-top: 1px;
+    }
 
     .grid_item1 {
         display: inline-block;
@@ -247,16 +260,17 @@ input {
     }
 }
 
+/* Responsive design for defined screen width*/
 @media only screen and (min-width : 1100px) and (max-width: 1150px) {
 
     .grid-container {
-    display: grid;
-    grid-template-columns: 300px 100px 450px auto auto;
-    background-color: #27535F;
-    align-items: center;
-    margin-bottom: 1px;
-    margin-top: 1px;
-}
+        display: grid;
+        grid-template-columns: 300px 100px 450px auto auto;
+        background-color: #27535F;
+        align-items: center;
+        margin-bottom: 1px;
+        margin-top: 1px;
+    }
 
     .grid_item1 {
         display: inline-block;
@@ -287,16 +301,17 @@ input {
     }
 }
 
+/* Responsive design for defined screen width*/
 @media only screen and (min-width : 1150px) and (max-width: 1340px) {
 
     .grid-container {
-    display: grid;
-    grid-template-columns: 300px 100px 450px auto auto auto;
-    background-color: #27535F;
-    align-items: center;
-    margin-bottom: 1px;
-    margin-top: 1px;
-}
+        display: grid;
+        grid-template-columns: 300px 100px 450px auto auto auto;
+        background-color: #27535F;
+        align-items: center;
+        margin-bottom: 1px;
+        margin-top: 1px;
+    }
 
     .grid_item1 {
         display: inline-block;
@@ -326,5 +341,3 @@ input {
         display: inline-block;
     }
 }
-
-
