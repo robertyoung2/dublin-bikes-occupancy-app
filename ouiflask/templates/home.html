@@ -1,40 +1,23 @@
 {% extends "layout.html" %}
 {% block content %}
 <div id="flexContainer">
-    <!--        Navigation Bar -->
-    <nav>
-        <div id="navLeft">            
-            <!-- Create a drop down menu where the user can select a station -->
-            <div id="dropdown">
-                <!-- On change will call the function takeStationID  -->
-                <p>
-                    <label>bike station</label>
-                    <input class="autocomplete" type="text" list="stationsList"  id="stationSelector" onchange="takeStationID()">
-                    <datalist id="stationsList">
-                        {% for row in results: %}
-                        <option value="{{row[0]}}" data-value="{{row[3]}}"></option>
-                        {% endfor %}
-                    </datalist>
-                </p>
-            </div>
 
-        </div>
-
-        <div id="navCentre">
-            <div class="inner">
-                <img id="logo" src="static/images/dublin_bikes.png">
-            </div>
-        </div>
-
-        <div id="navRight" class="weatherContainer">
-            <img id="weatherIcon" class="svg">
-            <h4 id="weatherDescription"></h4>
-            <img id="weatherThermometer" class="svg">
-            <h2 id="weatherTemp"></h2>
-        </div>
-
-    </nav>
-
+<nav>
+<div class="grid-container">
+    <div class="grid-item"> <input class="autocomplete" type="text" list="stationsList" placeholder="Search Stations" id="stationSelector" onchange="takeStationID()">
+        <datalist id="stationsList">
+            {% for row in results: %}
+            <option value="{{row[0]}}" data-value="{{row[3]}}"></option>
+            {% endfor %}
+        </datalist></div>
+    <div class="grid-item"><img id="logo" src="static/images/dublin_bikes_2.png"></div>
+    <div class="grid-item" id="pageTitle">OuiBikes | Dublin Bikes</div>
+    <div class="grid-item"><img id="weatherIcon" class="svg"></div>
+    <div class="grid-item"><p id="weatherDescription"><p/></div>
+    <div class="grid-item"><img id="weatherThermometer" class="svg"></div>
+    <div class="grid-item"><p id="weatherTemp"><p/></div>
+</div>
+</nav>
 
     <!-- map container -->
     <div id="mapContainer">
@@ -54,14 +37,6 @@
 
 <!-- get the weather from back end -->
 <script src="static/js/getWeather.js"></script>
-
-<!-- get user location -->
-<script>
-
-
-
-
-</script>
 
 <!-- javascript for creating the map -->
     <script type="text/javascript">
@@ -83,8 +58,8 @@
             var controlUI = document.createElement('div');
             controlUI.style.backgroundColor = '#fff';
             controlUI.style.border = '2px solid #fff';
-            controlUI.style.borderRadius = '3px';
-            controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+            controlUI.style.borderRadius = '1px';
+            {#controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';#}
             controlUI.style.cursor = 'pointer';
             controlUI.style.textAlign = 'center';
             controlUI.title = 'Click to get user location';
@@ -116,8 +91,8 @@
             var controlUI = document.createElement('div');
             controlUI.style.backgroundColor = '#fff';
             controlUI.style.border = '2px solid #fff';
-            controlUI.style.borderRadius = '3px';
-            controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+            controlUI.style.borderRadius = '1px';
+            {#controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';#}
             controlUI.style.cursor = 'pointer';
             controlUI.style.marginTop = '10px';
             controlUI.style.textAlign = 'center';
@@ -197,15 +172,19 @@
             // constructor passing in this DIV.
             var centerControlDiv = document.createElement('div');
             var centerControl = new CenterControl(centerControlDiv, map);
-
             centerControlDiv.index = 1;
             map.controls[google.maps.ControlPosition.TOP_RIGHT].push(centerControlDiv);
 
             var centerControlDiv = document.createElement('div');
-            var centerControl = new MyLocation(centerControlDiv, map);
-
+            var myLocation = new MyLocation(centerControlDiv, map);
             centerControlDiv.index = 2;
             map.controls[google.maps.ControlPosition.TOP_RIGHT].push(centerControlDiv);
+
+
+
+
+
+
 
             //once map object has been made, create markers. Markers are dependant on map so map must be created first
             createMarkers();
@@ -371,4 +350,3 @@
 
 </div>
 {% endblock content %}
-            
