@@ -1,9 +1,27 @@
 {% extends "layout.html" %}
 {% block content %}
-<div id="flexContainer">
+<!-- script to enable smooth scrolling to element -->
+<script src="static/js/smoothScroll.js"></script>
+
+<script>
+function arrow_Toggle() {
+    console.log("arrow clicked");
+    var element = document.getElementById("arrow");
+    element.classList.toggle("open");
+    if(element.classList.contains("open")){
+        SmoothVerticalScrolling('chart', 1000, 'top');
+    }
+    else{
+        SmoothVerticalScrolling('map', 1000, 'top');
+    }
+
+}
+</script>
+
+<div class="pageContainer">
     <!--        Navigation Bar -->
     <nav>
-        <div id="navLeft">            
+        <div id="navLeft">
             <!-- Create a drop down menu where the user can select a station -->
             <div id="dropdown">
                 <!-- On change will call the function takeStationID  -->
@@ -22,7 +40,7 @@
 
         <div id="navCentre">
             <div class="inner">
-                <img id="logo" src="static/images/dublin_bikes.png">
+                <img id="logo" src="static/images/dublin_bikes_transparent2.png">
             </div>
         </div>
 
@@ -35,47 +53,76 @@
 
     </nav>
 
+    <section id="mapSection">
+      <div class="content">
+            <div id="map"></div>
+      </div>
+    </section>
 
-    <!-- map container -->
-    <div id="mapContainer">
-        <div id="map"></div>
-    </div>
+    <section id="arrowSection">
+        <!--Taken from https://codepen.io/mattbraun/pen/EywBJR-->
+            <a class="arrow-icon open" id="arrow" href="javascript:arrow_Toggle()">
+              <span class="left-bar"></span>
+              <span class="right-bar"></span>
+            </a>
+    </section>
 
-    <div id="chartContainerOuter">
-        <div id="chartContainerInner">
-            <!-- <span class="chart" id="chart_1"></span>
-            <span class="chart" id="chart_2"></span> -->
-            <canvas id="chart_0"></canvas>
-
+    <section id="chartSection" class="scroll_on">
+        <div id="chartContainerOuter" class="content">
+            <div id="chartContainerInner">
+                <canvas id="chart_0"></canvas>
+            </div>
         </div>
-    </div>
+    </section>
+
+    <!-- get the weather from back end -->
+    <script src="static/js/getWeather.js"></script>
 
 
-
-<!-- get the weather from back end -->
-<script src="static/js/getWeather.js"></script>
-
-<!-- get user location -->
-<script>
-
-
-
-
-</script>
-
-<!-- javascript for creating the map -->
+    <!-- javascript for creating the map -->
     <script type="text/javascript">
 
         getWeather()
 
         var dict = {};
         var map, infoWindow;
-        var userZoomed = false;
-        var zoomListener;
         var dublin = {lat: 53.349013, lng: -6.260311};
 
         //important to declare infowindow here so it can be accessed by both dop() and addMarkerWithTimeout() functions
         var infowindow = null;
+
+        function setDefaultMapZoom(){
+            // console.log($(window).width());
+            // console.log($(window).height());
+            //
+            // var window_width = $(window).width();
+            // var window_height = $(window).height();
+            // if ((window_width<=320) && (window_height<=568)) {
+            //     var outer_zoom = 11.8;
+            // }
+            // else if (window_width<=375){
+            //     var outer_zoom = 12.2;
+            // }
+            // else if (window_width<=414){
+            //     var outer_zoom = 12.3;
+            // }
+            // else if (window_width<=801){
+                var default_zoom = 13.8;
+            // }
+            // else if (window_width<=2000){
+            //     var outer_zoom = 13.3;
+            // }
+            // else if (window_width<=3840){
+            //     var outer_zoom = 16;
+            // }
+            // else{
+            //     var outer_zoom = 17;
+            // }
+
+            return default_zoom
+        }
+
+        var default_zoom = setDefaultMapZoom();
 
         function MyLocation(controlDiv, map) {
 
@@ -138,7 +185,7 @@
             // Setup the click event listeners: simply set the map to Chicago.
             controlUI.addEventListener('click', function() {
                 map.setCenter(dublin);
-                map.setZoom(13);
+                map.setZoom(default_zoom);
         });
 
       }
@@ -151,44 +198,10 @@
             Calls function to create markers
             */
 
-            console.log($(window).width());
-            console.log($(window).height());
-
-            var window_width = $(window).width();
-            var window_height = $(window).height();
-            if ((window_width<=320) && (window_height<=568)) {
-                var outer_zoom = 11.8;
-            }
-            else if (window_width<=375){
-                var outer_zoom = 12.2;
-            }
-            else if (window_width<=414){
-                var outer_zoom = 12.3;
-            }
-            else if (window_width<=801){
-                var outer_zoom = 13;
-            }
-            else if (window_width<=2000){
-                var outer_zoom = 13.3;
-            }
-            else if (window_width<=3840){
-                var outer_zoom = 16;
-            }
-            else{
-                var outer_zoom = 17;
-            }
-
-
             //create map object
             map = new google.maps.Map(document.getElementById('map'), {
                 center: new google.maps.LatLng(53.349013,-6.260311), //starting location
-                zoom: outer_zoom //starting zoom level
-            });
-
-            zoomListener = map.addListener('zoom_changed', function () {
-                // infowindow.setContent('Zoom: ' + map.getZoom());
-                userZoomed = true;
-                console.log("userZoomed");
+                zoom: default_zoom //starting zoom level
             });
 
             infoWindow = new google.maps.InfoWindow;
@@ -201,23 +214,21 @@
             centerControlDiv.index = 1;
             map.controls[google.maps.ControlPosition.TOP_RIGHT].push(centerControlDiv);
 
-            var centerControlDiv = document.createElement('div');
-            var centerControl = new MyLocation(centerControlDiv, map);
+            var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
+            if(!isSafari){
+                centerControlDiv = document.createElement('div');
+                centerControl = new MyLocation(centerControlDiv, map);
 
-            centerControlDiv.index = 2;
-            map.controls[google.maps.ControlPosition.TOP_RIGHT].push(centerControlDiv);
+                centerControlDiv.index = 2;
+                map.controls[google.maps.ControlPosition.TOP_RIGHT].push(centerControlDiv);
+            }
+
+
 
             //once map object has been made, create markers. Markers are dependant on map so map must be created first
             createMarkers();
 
         }
-
-        // google.maps.event.addDomListener(window, 'load', initialize);
-        // google.maps.event.addDomListener(window, "resize", function() {
-        //  var center = map.getCenter();
-        //  google.maps.event.trigger(map, "resize");
-        //  map.setCenter(center);
-        // });
 
         // Gets the users location
         function getLocation() {
@@ -261,6 +272,7 @@
 
             // a counter for the loop below to assist with calculating timeout value for staggering drop animation
             var i = 0;
+            // const my_element = document.getElementById("chartContainerOuter");
 
             //Loop through results (SQL query nested list), each row is a different station with all it's values
             {% for row in results: %}
@@ -268,7 +280,7 @@
             // column values are all upper case
             name = '{{row[0]}}';
             nameString = String("{{row[0]}}").replace(/&#39;/g,"\\'");
-            console.log(nameString);
+            // console.log(nameString);
             number = parseInt('{{ row[3] }}', 10);
 
             var image = generate_heatmap({{row[4]}}, {{row[5]}});
@@ -285,7 +297,7 @@
               <tr id="queryData{{ row[3] }}">
               </tr>
               <tr>
-                <td id="moreInfo" colspan="2"><button onclick="AjaxCommunicationForBikeGraph({{ row[3] }}, (parseInt('{{row[4]}}', 10) + parseInt('{{row[5]}}', 10)), '`+nameString+`');">More Info</button></td>
+                <td id="moreInfo" colspan="2"><button onclick="AjaxCommunicationForBikeGraph({{ row[3] }}, (parseInt('{{row[4]}}', 10) + parseInt('{{row[5]}}', 10)), '`+nameString+`');">Check Availability</button></td>
               </tr>
             </table>`;
 
@@ -327,10 +339,8 @@
                     infowindow.open(map, marker);
                     map.setCenter(marker.getPosition());
 
-                    if(!userZoomed){
-                        map.setZoom(17);
-                        google.maps.event.removeListener(zoomListener);
-                    }
+                    map.setZoom(17);
+
                     // call the function making the ajax call
                     AjaxCommunicationForStationID(number);
 
@@ -344,27 +354,15 @@
 
     </script>
 
-<!-- javascript to populate the station with bike available -->
+    <script></script>
+    <!-- javascript to populate the station with bike available -->
     <script src="static/js/takeStationID.js"></script>
 
     <!-- script to make the graph -->
     <script src="static/js/graph.js"></script>
 
-    <!-- Google Graphs -->
-    <!-- <script type="text/javascript" src="https://www.google.com/jsapi"></script> -->
-    <!-- <script src="static/js/googleGraphMaker.js"></script> -->
-    <!-- <script>
-    google.load('visualization', '1.0', {
-      'packages': ['corechart']
-    });
-
-    // creates and populates a data table,
-    // instantiates the pie chart, passes in the data and
-    // draws it.
-    var chartVisible = false;
-    </script> -->
-
 
 </div>
+
 {% endblock content %}
             

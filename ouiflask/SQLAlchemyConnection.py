@@ -1,11 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.sql import column, text
 from functools import lru_cache
-import pandas as pd
-from datetime import timedelta, datetime, time
-import math
-from flask import jsonify
-import pickle
 
 
 USER=***REMOVED***
@@ -17,7 +12,7 @@ DB = ***REMOVED***
 #The engine stores the log in details used to connect to RDS instance
 engine = create_engine("mysql+pymysql://{}:{}@{}:{}/{}".format(USER, PASSWORD, URI, PORT, DB), echo=True)
 
-@lru_cache(maxsize=128)
+# @lru_cache(maxsize=128)
 def staticQuery():
     connection = engine.connect() #connects the engine to the database
 
@@ -79,17 +74,6 @@ def todayWeather():
     return d 
 
 
-
-
-# result = convert_ResultProxy_to_Array(result)
-
-
-# JSON_result = json.dumps(result) #convert list into JSON format (removed atm as having issues with formatting)
-
-
-
-
-
 def dynamicQuery(stationID):
 
     connection = engine.connect()  # connects the engine to the database
@@ -127,35 +111,4 @@ def dynamicQuery(stationID):
 
     return d
 
-
-
-# def get_station_occupancy_weekly_daily(station_id):
-#     days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-#     average_bikes_per_day = []
-#     average_bikes_per_hour = []
-#
-#     for day in days:
-#         hourly = []
-#         with open('/Users/conor/Desktop/COMP30830_Group_Project/oui-team/ouiflask/pickle_files/' + 'model_' + str(station_id) + '_' + day + '.pkl', 'rb') as handle:
-#             rob_model = pickle.load(handle)
-#
-#         for i in range(24):
-#             # Run scraper here for weather prediction and use robs dummy encoding to format (maybe do it outside look and loop through data, more efficient?)
-#             result = math.ceil(rob_model.predict([[i, 0, 5, 1, 0, 0, 0, 0, 0]]))
-#             hourly.append([i, result])
-#
-#         average_bikes_per_hour.append(hourly)
-#
-#     dayIndex = 0
-#     for day in average_bikes_per_hour:
-#         average_bikes = 0
-#         for hour in day:
-#             average_bikes += hour[1]
-#         average_bikes = round(average_bikes / len(day))
-#         average_bikes_per_day.append(average_bikes)
-#         dayIndex += 1
-#
-#     combined_list = [average_bikes_per_day, average_bikes_per_hour]
-#
-#     return jsonify(combined_list)
 

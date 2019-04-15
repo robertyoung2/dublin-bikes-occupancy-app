@@ -12,10 +12,16 @@ function AjaxCommunicationForBikeGraph(stationID, maxBikes, name){
 
         // when the python function return (Ajax have a response of 200 success) we can do something with the data returned
         success: function(station) {
-            console.log(station);
-            // draw the weekly graph
-            drawChartJS(station)
+            // console.log(station);
 
+             if($('#chartSection:visible').length == 0){
+                document.getElementById("chartSection").style.display = "block";
+                document.getElementById("arrowSection").style.display = "block";
+            }
+
+            // draw the weekly graph
+            drawChartJS(station);
+            SmoothVerticalScrolling("chart", 1000, 'top');
         },
         // If there is a problem with the ajax request we retrieve the error
         error: function(jqXHR) {
@@ -59,19 +65,19 @@ function drawChartJS(station_data) {
     options: {
         legend: {
             labels: {
-                fontColor: "1F414F",
+                fontColor: "yellow",
             }
         },
         scales: {
             yAxes: [{
                 ticks: {
                     beginAtZero: true,
-                    fontColor:'#1F414F'
+                    fontColor:'yellow'
                 }
             }],
             xAxes: [{
                 ticks: {
-                    fontColor:'#1F414F'
+                    fontColor:'yellow'
                 }
             }]
         }
@@ -83,8 +89,8 @@ function drawChartJS(station_data) {
 
         // select what bar is clicked
         var activePoints = myChart.getElementsAtEvent(evt);
-        console.log("Active Points");
-        console.log(activePoints);
+        // console.log("Active Points");
+        // console.log(activePoints);
 
         if (activePoints[0]) {
             // get the index 
@@ -108,12 +114,12 @@ function dayChart(station_data, idx) {
     // label of the graph
     var timeHour = [];
 
-    console.log(station_data[1]);
+    // console.log(station_data[1]);
     for (let index = 5; index < station_data[1][idx].length; index++) {
         timeHour.push(index+":00");
     }
     timeHour.push('Midnight');
-    console.log(timeHour);
+    // console.log(timeHour);
     // station_data[2] contain all the hourly data for each day [idx] select the wanted day 0 monday 1 tuesday...
     var avgBikesData = station_data[1][idx];
     //
@@ -153,19 +159,19 @@ function dayChart(station_data, idx) {
         options: {
             legend: {
                 labels: {
-                    fontColor: "1F414F",
+                    fontColor: "yellow",
                 }
             },
             scales: {
                 yAxes: [{
                     ticks: {
                         beginAtZero: true,
-                        fontColor:'#1F414F'
+                        fontColor:'yellow'
                     }
                 }],
                 xAxes: [{
                     ticks: {
-                        fontColor:'#1F414F'
+                        fontColor:'yellow'
                     }
                 }]
             }

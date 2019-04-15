@@ -32,7 +32,14 @@ function getWeather (){
             }
 
             document.getElementById("weatherThermometer").src = "/static/images/weather_icons/"+thermo_icon;
-            document.getElementById("weatherDescription").innerHTML = weather.description;
+
+            // Capitalises the first letter of every word of the weather description
+            // https://stackoverflow.com/a/29858893
+            var re = /(\b[a-z](?!\s))/g;
+            var weatherDescription = weather.description;
+            weatherDescription = weatherDescription.replace(re, function(x){return x.toUpperCase();});
+
+            document.getElementById("weatherDescription").innerHTML = weatherDescription;
             document.getElementById("weatherIcon").src = "/static/images/weather_icons/"+weather.icon+".svg";
         },
         // If there is a problem with the ajax request we retrieve the error
