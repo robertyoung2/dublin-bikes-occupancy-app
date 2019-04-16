@@ -1,23 +1,17 @@
 html, body {
-    height: 100%;
     margin: 0;
     padding: 0;
-    background-color: orange;
+    scroll-behavior: smooth; /*doesn't work in Safari*/
+    background-color: #373B44;
+    font-family: 'Roboto', sans-serif;
 }
 
-/*START Flexbox Properties*/
-#flexContainer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    overflow: auto;
-    display: flex;
-    background: rgb(86, 119, 136);
-    flex-direction: column;
-}
 
+.pageContainer{
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+}
 
 nav{
     background-color: rgb(45, 75, 85);
@@ -25,47 +19,62 @@ nav{
     position: sticky;
     top: 0;
     z-index: 1;
-
-    padding: 10px;
-    flex: 0 0 auto;
+    width: 100vw;
+    height: 10vh;
 }
 
-#mapContainer{
-    flex: 1 0;
-    min-height: 400px;
-    background: blue;
+section {
+    margin: 0;
+    width: 100%;
+    display: table;
+    max-width: none;
+    background-color: #373B44;
+    height: 90vh;
 }
 
-#chartContainerOuter{
-    /*flex: 0 0 auto;*/
-    margin: 10px;
-
-    background: rgb(77, 120, 138);
+#arrowSection{
+    height: 5vh;
+    display: none;
 }
-/*END Flexbox Properties*/
 
+.content {
+    display: table-cell;
+    vertical-align: middle;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
 
 
 #map{
+    margin: 0;
+    padding: 0;
     height: 100%;
 }
 
 
-#chartContainerInner{
-    /*display: inline-block;*/
-    display: flex;
-    flex-flow: row wrap;
-    /*align-items: center;*/
-    justify-content: center;
+#chartSection{
+    display: none;
 }
 
-.chart{
-    float: left;
-    margin: 20px;
-    border-radius: 50px;
+.scroll_on {
+    height: 85vh;
+}
+
+#chartSection.scroll_on {
+    height: 85vh;
+}
+
+canvas{
+    /*display: table-cell;*/
+    /*display:inline-block;*/
+    height:85vh;
+    width:100vh;
 }
 
 
+
+/*Weather Icons*/
 .svg{
     height: 100px;
 }

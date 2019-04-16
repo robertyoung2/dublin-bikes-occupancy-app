@@ -1,47 +1,51 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <!-- Required meta tags -->
-    <meta name="viewport" content="initial-scale=1.0">
-    <meta charset="utf-8">
-    
-    <!-- Jquery -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <html>
+        <head>
+            <!-- Required meta tags -->
+            <meta name="viewport" content="initial-scale=1.0">
+            <meta charset="utf-8">
 
-    <!-- chartJS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+            <!-- Jquery -->
+            <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
-    <!-- heatmap -->
-    <script src="/static/js/heatmap.js"></script>
+            <!-- chartJS -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
 
-    <!-- define the root of the page for ajax request -->
-    <script type=text/javascript>
-        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-    </script>
+            <!-- heatmap -->
+            <script src="/static/js/heatmap.js"></script>
 
-    <style>
-        <span class="metadata-marker" style="display: none;" data-region_tag="css"></span>      /* Always set the map height explicitly to define the size of the div */
-    </style>
+            <!-- define the root of the page for ajax request -->
+            <script type=text/javascript>
+                $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+            </script>
 
-    {% if title %}
-        <title>OuiBike - {{ title }}</title>
-    {% else %}
-        <title>OuiBike</title>
-    {% endif %}
+            <style>
+                <span class="metadata-marker" style="display: none;" data-region_tag="css"></span>      /* Always set the map height explicitly to define the size of the div */
+            </style>
 
-    <!-- Static CSS -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/navbar.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/infowindow.css') }}">
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+            {% if title %}
+                <title>OuiBike - {{ title }}</title>
+            {% else %}
+                <title>OuiBike</title>
+            {% endif %}
 
-</head>
-<body>
-    <div>
-        {% block content %}{% endblock %}
-    </div>
+            <!-- Static CSS -->
+            <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+            <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/navbar.css') }}">
+            <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/infowindow.css') }}">
+            <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/scrollArrow.css') }}">
+            <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        
 
-    <!--Note the "=initMap" at the end of this URL, this calls the initMap() function on page load-->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3jfCg18B1ksPENyBJTzmkM78Uva1XiKw&callback=initMap"></script>
-</body>
-</html>
+        </head>
+
+        <body>
+            <div>
+                {% block content %}{% endblock %}
+                <script src="https://www.jqueryscript.net/demo/Flash-Toast-Notification/flash.js"></script>
+            </div>
+
+            <!--Note the "=initMap" at the end of this URL, this calls the initMap() function on page load-->
+            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3jfCg18B1ksPENyBJTzmkM78Uva1XiKw&callback=initMap"></script>
+        </body>
+    </html>
