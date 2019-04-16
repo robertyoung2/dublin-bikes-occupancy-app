@@ -2,7 +2,7 @@ html, body {
     margin: 0;
     padding: 0;
     scroll-behavior: smooth; /*doesn't work in Safari*/
-    background-color: #373B44;
+    background-color: #27535F;
     font-family: 'Roboto', sans-serif;
 }
 
@@ -18,7 +18,7 @@ section {
     width: 100%;
     display: table;
     max-width: none;
-    background-color: #373B44;
+    background-color: #EEEEEE;
     height: 90vh;
 }
 #arrowSection{

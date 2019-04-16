@@ -58,28 +58,28 @@ function drawChartJS(station_data) {
         datasets: [{
             label: station_data[3] + ' - Average Available Bikes - Weekly',
             data: avgBikesData,
-            backgroundColor: '#1F414F',
-            // hoverBackgroundColor: "yellow",
-            hoverBorderColor: "yellow",
-            borderWidth: 1
+            backgroundColor: '#3F898C',
+            hoverBorderColor: "#AB6F69",
+            borderColor: '#EEEEEE',
+            borderWidth: 5
         }]
     },
     options: {
         legend: {
             labels: {
-                fontColor: "yellow",
+                fontColor: "black",
             }
         },
         scales: {
             yAxes: [{
                 ticks: {
                     beginAtZero: true,
-                    fontColor:'yellow'
+                    fontColor:'black'
                 }
             }],
             xAxes: [{
                 ticks: {
-                    fontColor:'yellow'
+                    fontColor:'black'
                 }
             }]
         }
@@ -149,31 +149,28 @@ function dayChart(station_data, idx) {
             datasets: [{
                 label: station_data[3] + ' - Predicted Available Bikes - ' + weekday[idx],
                 data: meanAvailableHourly,
-                backgroundColor: '#1F414F',
-                // hoverBackgroundColor: "yellow",
-                hoverBorderColor: "yellow",
-                // borderColor: [
-                //     'rgba(255, 99, 132, 1)'
-                // ],
-                borderWidth: 1
+                backgroundColor: '#3F898C',
+                hoverBorderColor: "#AB6F69",
+            borderColor: '#EEEEEE',
+                borderWidth: 5
             }]
         },
         options: {
             legend: {
                 labels: {
-                    fontColor: "yellow",
+                    fontColor: "black",
                 }
             },
             scales: {
                 yAxes: [{
                     ticks: {
                         beginAtZero: true,
-                        fontColor:'yellow'
+                        fontColor:'black'
                     }
                 }],
                 xAxes: [{
                     ticks: {
-                        fontColor:'yellow'
+                        fontColor:'black'
                     }
                 }]
             }

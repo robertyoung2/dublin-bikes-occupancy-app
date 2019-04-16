@@ -7,17 +7,21 @@ caption{
 
 tr{
     border-top: 1px solid black;
+    font-family: 'Roboto', sans-serif;
 }
 
 table{
     text-align: center;
     border-spacing: 15px 15px;
     border-top: 1px solid black;
+    font-family: 'Roboto', sans-serif;
 }
 
-/*tr[id^="queryData"]{*/
-    /*background-color: yellow;*/
-/*}*/
+/* Increases the size of the numbers in the more info box*/
+tr[id^="queryData"]{
+        font-size: 18px;
+        font-family: 'Roboto', sans-serif;
+}
 
 #moreInfo{
     border-radius: 5px;
