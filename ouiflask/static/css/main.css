@@ -13,16 +13,6 @@ html, body {
     padding: 0;
 }
 
-nav{
-    background-color: rgb(45, 75, 85);
-    position: -webkit-sticky;
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    width: 100vw;
-    height: 10vh;
-}
-
 section {
     margin: 0;
     width: 100%;
@@ -31,7 +21,6 @@ section {
     background-color: #373B44;
     height: 90vh;
 }
-
 #arrowSection{
     height: 5vh;
     display: none;
@@ -44,6 +33,7 @@ section {
     padding: 0;
     border: 0;
 }
+
 
 
 #map{
@@ -76,5 +66,6 @@ canvas{
 
 /*Weather Icons*/
 .svg{
-    height: 100px;
+    height: 75px;
 }
+
