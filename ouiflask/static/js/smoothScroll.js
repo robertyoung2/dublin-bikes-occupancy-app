@@ -6,13 +6,14 @@ function SmoothVerticalScrolling(element, time, where) {
         e.classList.add("scroll_on");
         firstLoad = false;
     }
+    var bodyElement = document.getElementById("body");
     if(element === "map"){
-        var eTop = -1 * document.documentElement.clientHeight
+        var eTop = -1 * bodyElement.clientHeight;
     }
     else if(element === "chart"){
-        var eTop = document.documentElement.clientHeight
+        var eTop = bodyElement.clientHeight;
     }
-
+    console.log(eTop);
     var eAmt = eTop / 100;
     var curTime = 0;
     while (curTime <= time) {
