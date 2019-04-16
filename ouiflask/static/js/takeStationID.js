@@ -2,7 +2,8 @@ function takeStationID() {
     // retrive the station that the user selected in the drop down menue
     // var x = document.getElementById("stationSelector").value
     var shownVal= document.getElementById("stationSelector").value;
-    var x=document.querySelector("#stationsList option[value='"+shownVal+"']").dataset.value;
+    shownVal = String(shownVal).replace(/&#39;/g,"\\'");
+    var x=document.querySelector("#stationsList option[value=\""+shownVal+"\"]").dataset.value;
 
     // initialises a variable that references the marker object from dictionary with the key the station
     // name selected in the dropdown menu
