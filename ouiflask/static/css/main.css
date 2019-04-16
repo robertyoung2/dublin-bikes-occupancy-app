@@ -52,13 +52,13 @@ section {
 }
 
 #chartSection.scroll_on {
-    height: 85vh;
+    height: 95vh;
 }
 
 canvas{
     /*display: table-cell;*/
     /*display:inline-block;*/
-    height:85vh;
+    height:95vh;
     width:100vh;
 }
 
