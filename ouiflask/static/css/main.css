@@ -3,6 +3,7 @@ html, body {
     padding: 0;
     scroll-behavior: smooth; /*doesn't work in Safari*/
     background-color: #373B44;
+    font-family: 'Roboto', sans-serif;
 }
 
 
