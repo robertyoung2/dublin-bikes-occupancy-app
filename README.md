@@ -36,7 +36,7 @@ Flask app is run using a combination of Nginx and Gunicorn. The IP for our web a
 Gunicorn is the server the runs the application. Nginx is used as the reverse-proxy server.
 
 To start the flask app running, and to keep it running on our IP address, the process call on the EC2 instance is:
-* gunicorn run:app
+* nohup gunicorn run:app &
 
 To stop gunicorn running, the command is:
 * pkill gunicorn
@@ -74,3 +74,5 @@ The type for each of the previous variables is as follows:
 
 The resulting output will be a float value estimating the number of bikes available for the given inputs.
 This should be rounded to an integer to allow for a sensible result. Eg "5 bikes" as oppose to "4.7 bikes".
+
+The path for the pickle files on EC2 is: /home/ubuntu/oui-team/pickle_files/
