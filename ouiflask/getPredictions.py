@@ -118,10 +118,38 @@ def getFormattedWeatherData(selectedDate, selectedTime, df, items):
         if element['dt_txt'] == nearest_date:
             main_weather = element['weather'][0]['main']
             temp = round(element['main']['temp'] - 273.15, 2)
-            if element['rain'] == {}:
+
+          #Error Handling for rainfall prediction due to varying key values from OpenWeatherAPI
+            try:
+                try:
+                    if element['rain']['3h'] == {}:
+                        rain = 0
+                    else:
+                        rain = element['rain']['3h']
+                except:
+                    try:
+                        if element['rain'] == {}:
+                            rain = 0
+                        else:
+                            rain = element['rain']
+                    except:
+                        try:
+                            if element['snow']['3h'] == {}:
+                                rain = 0
+                            else:
+                                rain = element['snow']['3h']
+                        except:
+                            try:
+                                if element['snow'] == {}:
+                                    rain = 0
+                                else:
+                                    rain = element['snow']
+                            except:
+                                rain = 0
+            except:
                 rain = 0
-            else:
-                rain = element['rain']['3h']
+
+
 
             df_db = pd.DataFrame(
                 {'time': [chosen_time], 'main_weather': [main_weather], 'temp': [temp], 'rain_mm': [rain]})
