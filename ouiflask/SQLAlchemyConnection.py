@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.sql import column, text
 from functools import lru_cache
 
-
+# set up all the information to access the RDS
 USER=***REMOVED***
 PASSWORD=***REMOVED***
 URI = ***REMOVED***
@@ -12,7 +12,6 @@ DB = ***REMOVED***
 #The engine stores the log in details used to connect to RDS instance
 engine = create_engine("mysql+pymysql://{}:{}@{}:{}/{}".format(USER, PASSWORD, URI, PORT, DB), echo=True)
 
-# @lru_cache(maxsize=128)
 def staticQuery():
     connection = engine.connect() #connects the engine to the database
 
@@ -38,9 +37,6 @@ def staticQuery():
 def Convert(myTuple, myList):
     for add, lat, lng, number, available_bikes, available_bike_stands in myTuple:
         myList.append([add, lat, lng, number, available_bikes, available_bike_stands])
-    # print()
-    # print(myList)
-    # print()
     return myList
 
     
@@ -57,10 +53,7 @@ def todayWeather():
             column('icon'),
             column('main.temp')
         )
-
-    # print("Before Query")
     result = connection.execute(sql)
-    # print("After Query")
 
     d=dict()
     for row in result:
@@ -76,8 +69,7 @@ def todayWeather():
 
 def dynamicQuery(stationID):
 
-    connection = engine.connect()  # connects the engine to the database
-
+    connection = engine.connect()  
     """
     SQL query to get data from RDS db stations table
     To populate more details on the InfoWindow, add them to query here
@@ -110,5 +102,3 @@ def dynamicQuery(stationID):
         return result
 
     return d
-
-
