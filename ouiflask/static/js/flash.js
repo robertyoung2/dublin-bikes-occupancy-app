@@ -1,4 +1,5 @@
 function flashMessage (message){
+  // This function will create a flash message using the flash function from a jquery library
     flash(message ,{
         // background color
         'bgColor' : '#508698',
@@ -15,9 +16,7 @@ function flashMessage (message){
         'clickable' : true,
         // auto hides after a duration time
         'autohide' : true,
-      
         // timout
         'duration' : 4000
-        
       });
 }

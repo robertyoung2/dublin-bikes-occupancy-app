@@ -43,7 +43,7 @@ def predict(station_id, maxBikes, name):
     for day in days:
         hourly = []
         predictedDays.append(day[1])
-        with open("/home/ubuntu/oui-team/pickle_files/" + 'model_' + str(station_id) + '_' + day[1] + '.pkl', 'rb') as handle:
+        with open("C:\\Users\\Arnaud\\Desktop\\UCD\\SoftEngineering\\oui-team\\ouiflask\\pickle_files\\" + 'model_' + str(station_id) + '_' + day[1] + '.pkl', 'rb') as handle:
             rob_model = pickle.load(handle)
 
         for pred_time in range(24):
