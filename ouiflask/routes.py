@@ -1,6 +1,5 @@
-from flask import render_template, request, flash, jsonify, make_response
+from flask import render_template, request, jsonify
 from ouiflask import app, SQLAlchemyConnection, getPredictions
-import pickle
 
 @app.route("/")
 @app.route("/home")
