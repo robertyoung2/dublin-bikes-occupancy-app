@@ -5,13 +5,12 @@ import requests
 from datetime import timedelta, datetime
 import pickle
 import math
-
+# You need to change the absolute path of the pickle_files to make this code work.
 
 def get_dates(days_to_add):
-    dates_array = []
 
+    dates_array = []
     current_date = datetime.now().date()
-    # print(current_date)
     for i in range(0, days_to_add + 1):
         dates_array.append([current_date, current_date.strftime("%A")])
         current_date = current_date + timedelta(days=1)
@@ -24,17 +23,13 @@ def choose_nearest_datetime(datetime_options, selected_datetime):
 
 
 def predict(station_id, maxBikes, name):
+    # this function return a json object containing the predicted number of bikes (weekly and hourly prediction) for the folowing 5 days.
 
     days = get_dates(5)
-    # print(days)
-
     average_bikes_per_day = []
     average_bikes_per_hour = []
-
     df = scrape_forecast_weather()
-
     items = []
-
     predictedDays = []
 
     for forecast in df['list'][0]:
@@ -43,7 +38,7 @@ def predict(station_id, maxBikes, name):
     for day in days:
         hourly = []
         predictedDays.append(day[1])
-        with open("/home/ubuntu/oui-team/pickle_files/" + 'model_' + str(station_id) + '_' + day[1] + '.pkl', 'rb') as handle:
+        with open("C:\\Users\\Arnaud\\Desktop\\UCD\\SoftEngineering\\oui-team\\ouiflask\\pickle_files\\" + 'model_' + str(station_id) + '_' + day[1] + '.pkl', 'rb') as handle:
             rob_model = pickle.load(handle)
 
         for pred_time in range(24):
@@ -91,6 +86,7 @@ def predict(station_id, maxBikes, name):
 
 
 def scrape_forecast_weather():
+    # return a panda dataframe containing the forecast weather of the next 5 days.
 
     # API weather URI for city ID "Dublin, IE"
     api_url_base_weather = 'http://api.openweathermap.org/data/2.5/forecast?id=7778677'

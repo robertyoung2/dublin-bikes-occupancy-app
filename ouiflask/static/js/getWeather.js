@@ -7,11 +7,6 @@ function getWeather (){
         url: $SCRIPT_ROOT + '/getWeather',
         // when the python function return (Ajax have a response of 200 success) we can do something with the data     returned
         success: function(weather) {
-            // TO DO: make something useful with the retrieved data
-            // console.log(weather);
-            // var weatherHtml = "we are the "+ weather.last_update +" and today the weather is "+ weather.description ;
-            // document.getElementById("weather").innerHTML = weatherHtml;
-
             var current_temp_celcius = Math.round(weather.temp - 273.15);
             document.getElementById("weatherTemp").innerHTML = current_temp_celcius + " &#8451" ;
 

@@ -1,48 +1,34 @@
-from flask import render_template, request, flash, jsonify, make_response
+from flask import render_template, request, jsonify
 from ouiflask import app, SQLAlchemyConnection, getPredictions
-import pickle
 
-
-#Allows access to home.html through the browser by typing either /home or nothing at the end of url
 @app.route("/")
 @app.route("/home")
 def home():
+    # result contain the address of all the station and also the available bikes to build the google map when the page load.
     result = SQLAlchemyConnection.staticQuery()
-
     return render_template('home.html', results=result)
-    
 
-# this route is called by a javascript (AJAX) call
 @app.route("/stationDetail", methods=["GET","POST"])
 def stationDetail():
-    # assign the value stationID from the ajax post
+    # retrive the station ID from the front end.
     stationID = request.form['stationID']
-
-
     result = SQLAlchemyConnection.dynamicQuery(stationID)
-    # return a json object to the front end that can be used by jinja
-
+    # return a json object to the front end that can be used JavaScript
     return jsonify(result)
 
-
-# this route is called by a javascript (AJAX) call
 @app.route("/bikeGraph", methods=["GET","POST"])
 def bikeGraph():
-
-    # assign the value stationID from the ajax post
     stationID = request.form['stationID']
     maxBikes = int(request.form['maxBikes'])
     name = request.form['station_name']
-
+    # use the prediction model to return the predicted available bikes to the front end.
     result = getPredictions.predict(stationID, maxBikes, name)
-    # return a json object to the front end that can be used by jinja
-
     return result
 
 
 @app.route("/getWeather", methods=["POST"])
 def getWeather():
     weather = SQLAlchemyConnection.todayWeather()
-
+    # return the weather of the day to the front end.
     return jsonify(weather)
 

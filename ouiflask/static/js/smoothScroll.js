@@ -13,7 +13,6 @@ function SmoothVerticalScrolling(element, time, where) {
     else if(element === "chart"){
         var eTop = bodyElement.clientHeight;
     }
-    console.log(eTop);
     var eAmt = eTop / 100;
     var curTime = 0;
     while (curTime <= time) {
