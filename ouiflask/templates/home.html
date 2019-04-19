@@ -77,33 +77,9 @@ function arrow_Toggle() {
         var infowindow = null;
 
         function setDefaultMapZoom(){
-            // console.log($(window).width());
-            // console.log($(window).height());
-            //
-            // var window_width = $(window).width();
-            // var window_height = $(window).height();
-            // if ((window_width<=320) && (window_height<=568)) {
-            //     var outer_zoom = 11.8;
-            // }
-            // else if (window_width<=375){
-            //     var outer_zoom = 12.2;
-            // }
-            // else if (window_width<=414){
-            //     var outer_zoom = 12.3;
-            // }
-            // else if (window_width<=801){
-                var default_zoom = 13.8;
-            // }
-            // else if (window_width<=2000){
-            //     var outer_zoom = 13.3;
-            // }
-            // else if (window_width<=3840){
-            //     var outer_zoom = 16;
-            // }
-            // else{
-            //     var outer_zoom = 17;
-            // }
-
+            // had previously implemented a function here that set default map zoom
+            // depending on screen size but removed it for submission due to some inaccuracies
+            var default_zoom = 13.8;
             return default_zoom
         }
 

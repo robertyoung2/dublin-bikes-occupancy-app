@@ -5,10 +5,12 @@ import requests
 from datetime import timedelta, datetime
 import pickle
 import math
-# You need to change the absolute path of the pickle_files to make this code work.
 
 def get_dates(days_to_add):
-
+    """
+    Function to determine what the next five days will be
+    Returns the names of next 5 days stored as strings in a list
+    """
     dates_array = []
     current_date = datetime.now().date()
     for i in range(0, days_to_add + 1):
@@ -19,12 +21,19 @@ def get_dates(days_to_add):
 
 
 def choose_nearest_datetime(datetime_options, selected_datetime):
+    """
+    Function which takes a datetime, compares it to a list of datetimes
+    Returns the closest datetime from the list
+    """
     return min(datetime_options, key=lambda x: abs(x - selected_datetime))
 
 
 def predict(station_id, maxBikes, name):
-    # this function return a json object containing the predicted number of bikes (weekly and hourly prediction) for the folowing 5 days.
-
+    """
+    Function to return a json object containing the predicted number of bikes for the next 5 days
+    Returns the daily averages, hourly predictions for each day, as well as the names of each day in the correct order
+    to be used for populating both weekly and hourly charts
+    """
     days = get_dates(5)
     average_bikes_per_day = []
     average_bikes_per_hour = []
@@ -38,7 +47,9 @@ def predict(station_id, maxBikes, name):
     for day in days:
         hourly = []
         predictedDays.append(day[1])
-        with open("C:\\Users\\Arnaud\\Desktop\\UCD\\SoftEngineering\\oui-team\\ouiflask\\pickle_files\\" + 'model_' + str(station_id) + '_' + day[1] + '.pkl', 'rb') as handle:
+
+        # WARNING This is an absolute path to the pickle files in local repository, must change for this to work
+        with open(***REMOVED*** + 'model_' + str(station_id) + '_' + day[1] + '.pkl', 'rb') as handle:
             rob_model = pickle.load(handle)
 
         for pred_time in range(24):
@@ -86,7 +97,10 @@ def predict(station_id, maxBikes, name):
 
 
 def scrape_forecast_weather():
-    # return a panda dataframe containing the forecast weather of the next 5 days.
+    """
+    Function to scrape the forecast weather data from OpenWeather API
+    Returns the data as a pandas DataFrame
+    """
 
     # API weather URI for city ID "Dublin, IE"
     api_url_base_weather = 'http://api.openweathermap.org/data/2.5/forecast?id=7778677'
@@ -105,6 +119,11 @@ def scrape_forecast_weather():
 
 
 def getFormattedWeatherData(selectedDate, selectedTime, df, items):
+    """
+    Function that takes the forecast weather information returned by the scraper and formats it
+    appropriately to be loaded into the pickle files
+    """
+
     chosen_time = datetime.strptime(str(selectedDate), '%Y-%m-%d')
     chosen_time = chosen_time.replace(hour=selectedTime)
 

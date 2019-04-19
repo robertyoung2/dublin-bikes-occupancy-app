@@ -10,25 +10,34 @@ def home():
 
 @app.route("/stationDetail", methods=["GET","POST"])
 def stationDetail():
-    # retrive the station ID from the front end.
+    """
+    Retrieves the station ID from the front end
+    Returns a json object containing dynamic station information to populate station infowindow
+    """
+
     stationID = request.form['stationID']
     result = SQLAlchemyConnection.dynamicQuery(stationID)
-    # return a json object to the front end that can be used JavaScript
     return jsonify(result)
 
 @app.route("/bikeGraph", methods=["GET","POST"])
 def bikeGraph():
+    """
+    Passes necessary data to the prediction model and returns the result to the front end in the format needed to
+    populate the charts
+    :return:
+    """
     stationID = request.form['stationID']
     maxBikes = int(request.form['maxBikes'])
     name = request.form['station_name']
-    # use the prediction model to return the predicted available bikes to the front end.
     result = getPredictions.predict(stationID, maxBikes, name)
     return result
 
 
 @app.route("/getWeather", methods=["POST"])
 def getWeather():
+    """
+    Returns the current weather to the front end in JSON format
+    """
     weather = SQLAlchemyConnection.todayWeather()
-    # return the weather of the day to the front end.
     return jsonify(weather)
 

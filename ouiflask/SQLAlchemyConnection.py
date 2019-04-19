@@ -35,12 +35,24 @@ def staticQuery():
     return result
 
 def Convert(myTuple, myList):
+    """
+    Function to convert SQL Alchemy ResultProxy into a python list
+    :param myTuple:
+    :param myList:
+    :return myList:
+    """
+
     for add, lat, lng, number, available_bikes, available_bike_stands in myTuple:
         myList.append([add, lat, lng, number, available_bikes, available_bike_stands])
     return myList
 
     
 def todayWeather():
+    """
+    Function to make a query to the RDS DataBase and return the latest weather information
+    Converts SQLAlchemy ResultProxy into a python dictionary
+    :return dictionary of current weather information:
+    """
     connection = engine.connect()
 
     sql = text("SELECT last_update, description, icon , `main.temp`"
@@ -69,11 +81,12 @@ def todayWeather():
 
 def dynamicQuery(stationID):
 
-    connection = engine.connect()  
     """
     SQL query to get data from RDS db stations table
     To populate more details on the InfoWindow, add them to query here
+    Converts SQLAlchemy result proxy into a python dictionary
     """
+    connection = engine.connect()
     sql = text("SELECT last_update, available_bike_stands, available_bikes, name "
                                 "FROM station_status, stations "
                                 "WHERE station_status.number = "+ stationID + " and station_status.number = stations.number "
