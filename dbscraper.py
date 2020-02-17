@@ -1,15 +1,12 @@
 #!/usr/bin/env python
 
-
 # Import required libraries
 import pandas as pd
 import requests
-
 import json
 from sqlalchemy import create_engine
 import traceback
 import os
-
 import datetime
 
 NAME = "Dublin"
@@ -22,10 +19,10 @@ PORT = ***REMOVED***
 USER = ***REMOVED***
 PASSWORD = ***REMOVED***
 
-
 engine = create_engine("mysql+pymysql://{}:{}@{}:{}/{}".format(USER, PASSWORD, URI, PORT, DB), echo=True)
 
 def stations_to_db(df):
+    """Connect to RDS database"""
     try:
         df.to_sql('station_status', con=engine, if_exists='append', index=False)
     except:
@@ -36,17 +33,13 @@ def stations_to_db(df):
         print("operation complete")
     return
 
-
 try:
     r = requests.get(STATIONS, params={"apiKey": API_KEY, "contract": NAME})
     data = json.JSONDecoder().decode(r.text)
     df = pd.DataFrame(data)
     df = df.drop(columns=['bonus', 'address', 'contract_name', 'position', 'name'], axis=1)
-    
     currentDT = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
     df['last_update'] = str(currentDT)
-    
     stations_to_db(df)
 
     # Check if csv exists, if not, create one
@@ -75,9 +68,4 @@ except:
     f = open("logTracebackError.log", "a+")
     print(traceback.format_exc())
     f.write(traceback.format_exc())
-    f.close() 
-    
-    
-    
-
-
+    f.close()
