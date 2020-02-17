@@ -13,25 +13,21 @@ DB = ***REMOVED***
 engine = create_engine("mysql+pymysql://{}:{}@{}:{}/{}".format(USER, PASSWORD, URI, PORT, DB), echo=True)
 
 def staticQuery():
-    connection = engine.connect() #connects the engine to the database
-
     """
     SQL query to get data from RDS db stations table
     To populate more details on the InfoWindow, add them to query here
     """
+    connection = engine.connect()
     result = connection.execute("""SELECT DISTINCT address, position_lat, position_lng, station_status.number, available_bikes, available_bike_stands
                                     FROM stations, station_status
                                     WHERE station_status.number = stations.number 
                                         AND `last_update` BETWEEN DATE_SUB(NOW() , INTERVAL 6 MINUTE) AND NOW()
                                     ORDER BY last_update DESC;""")
-
     connection.close() # Close engine connection to tidy up resources
-
     myTuple = result
     myList = []
     result = Convert(myTuple, myList)
     print("results:", result)
-
     return result
 
 def Convert(myTuple, myList):
@@ -41,9 +37,9 @@ def Convert(myTuple, myList):
     :param myList:
     :return myList:
     """
-
     for add, lat, lng, number, available_bikes, available_bike_stands in myTuple:
         myList.append([add, lat, lng, number, available_bikes, available_bike_stands])
+
     return myList
 
     
@@ -73,9 +69,8 @@ def todayWeather():
         d["description"]=row["description"]
         d["icon"]=row["icon"]
         d["temp"]=row["main.temp"]
-
     connection.close()
-    
+
     return d 
 
 
@@ -91,7 +86,6 @@ def dynamicQuery(stationID):
                                 "FROM station_status, stations "
                                 "WHERE station_status.number = "+ stationID + " and station_status.number = stations.number "
                                 "ORDER BY last_update DESC LIMIT 1")
-
     sql = sql.columns(
             column('last_update'),
             column('available_bike_stands'),

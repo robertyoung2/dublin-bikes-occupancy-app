@@ -4,7 +4,7 @@ from ouiflask import app, SQLAlchemyConnection, getPredictions
 @app.route("/")
 @app.route("/home")
 def home():
-    # result contain the address of all the station and also the available bikes to build the google map when the page load.
+    # result contain the address of all the station and  available bikes to build the google map when the page load.
     result = SQLAlchemyConnection.staticQuery()
     return render_template('home.html', results=result)
 
@@ -14,7 +14,6 @@ def stationDetail():
     Retrieves the station ID from the front end
     Returns a json object containing dynamic station information to populate station infowindow
     """
-
     stationID = request.form['stationID']
     result = SQLAlchemyConnection.dynamicQuery(stationID)
     return jsonify(result)
@@ -40,4 +39,3 @@ def getWeather():
     """
     weather = SQLAlchemyConnection.todayWeather()
     return jsonify(weather)
-

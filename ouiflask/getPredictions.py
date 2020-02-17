@@ -101,7 +101,6 @@ def scrape_forecast_weather():
     Function to scrape the forecast weather data from OpenWeather API
     Returns the data as a pandas DataFrame
     """
-
     # API weather URI for city ID "Dublin, IE"
     api_url_base_weather = 'http://api.openweathermap.org/data/2.5/forecast?id=7778677'
     api_token_weather = ***REMOVED***
@@ -123,7 +122,6 @@ def getFormattedWeatherData(selectedDate, selectedTime, df, items):
     Function that takes the forecast weather information returned by the scraper and formats it
     appropriately to be loaded into the pickle files
     """
-
     chosen_time = datetime.strptime(str(selectedDate), '%Y-%m-%d')
     chosen_time = chosen_time.replace(hour=selectedTime)
 
