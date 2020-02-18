@@ -14,7 +14,7 @@ The application can be accessed at [www.dublin-bikes.ie](https://www.dublin-bike
 * Data Analysis and Predictive Model Training can be seen: [here](https://github.com/robertyoung2/dublin-bikes-occupancy-app/blob/master/Machine-Learning-Predictive-Model.ipynb).
 * Dublin Bikes webscraper: [dbscraper.py](https://github.com/robertyoung2/dublin-bikes-occupancy-app/blob/master/dbscraper.py).
 * The Open Weather webscraper: [weather_scraper.py](https://github.com/robertyoung2/dublin-bikes-occupancy-app/blob/master/weather_scraper.py).
-* The Machine Learning predictor model: [predictor_model.py](https://github.com/robertyoung2/dublin-bikes-occupancy-app/blob/master/predictor_model.py.).
+* The Machine Learning predictor model: [predictor_model.py](https://github.com/robertyoung2/dublin-bikes-occupancy-app/blob/master/predictor_model.py).
 
 ## Documentation
 
