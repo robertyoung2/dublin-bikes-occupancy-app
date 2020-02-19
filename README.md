@@ -43,3 +43,9 @@ Training of the ML models occurs once a week, as one more week of additional inf
 * The current weather conditions: rainfall in mm, temperature in C, and weather descriptor, such as 'Clouds'.
 
 With this inputs, a prediction is made for how many bikes will be available for the selected hourly time period. 
+
+## Known Issues
+
+* Graph sizing issue on larger screens (does not fill the screen in the map, causes resolution issues)
+* Need to add and check for the creation of new bike stations, and have these auto-populate the static database
+* Compatability issues with JS in Firefox browser
