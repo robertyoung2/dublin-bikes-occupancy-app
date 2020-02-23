@@ -48,4 +48,4 @@ With this inputs, a prediction is made for how many bikes will be available for 
 
 * Graph sizing issue on larger screens (does not fill the screen in the map, causes resolution issues)
 * Need to add and check for the creation of new bike stations, and have these auto-populate the static database
-* Compatability issues with JS in Firefox browser
+* Compatability issues with jquery in Firefox browser: " Using //@ to indicate sourceMappingURL pragmas is deprecated. Use //# instead"
