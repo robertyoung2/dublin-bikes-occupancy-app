@@ -6,8 +6,6 @@ This information was used to populate the application and to allow the training 
 
 If you wish to see how many bikes will be available in the future, say you want to get a bike at 8am on a Tuesday, you can click on a day of the week to get an hour-by-hour break down of the day and a prediction for available bikes and vacant bike slots at the given station. Real time bike availability can also be viewed quickly and easily view the implementation of a bike station marker heat-icon.
 
-The application can be accessed at [www.dublin-bikes.ie](https://www.dublin-bikes.ie/).
-
 ## Scripts and Notebooks
 
 * Main Flask application can be viewed in the directory: [ouiflask](https://github.com/robertyoung2/dublin-bikes-occupancy-app/tree/master/ouiflask).
